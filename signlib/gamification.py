@@ -173,6 +173,58 @@ def _count_sign(user_id, sign):
     )["n"]
 
 
+def badge_progress(user_id: int) -> dict:
+    """Progres menuju tiap badge (untuk tampilan 'x/target' pada badge locked).
+
+    Return: {badge_key: {"current": n, "target": m}} — hanya badge yang
+    memiliki metrik progres. Metrik mengikuti aturan evaluate_badges:
+    master_* dihitung dari jumlah sesi per kategori (syarat akurasi ≥ 90%
+    tetap berlaku saat evaluasi unlock, deskripsi badge sudah menjelaskannya).
+    """
+    targets = {
+        "first_practice": 1,
+        "master_alfabet": 10,
+        "master_angka": 10,
+        "sibi_explorer": 5,
+        "bisindo_explorer": 5,
+        "streak_7": 7,
+        "challenger": 10,
+        "perfect_round": 1,
+    }
+    current = {
+        "first_practice": db.query(
+            "SELECT COUNT(*) n FROM practice_sessions WHERE user_id = ?",
+            (user_id,), one=True)["n"],
+        "streak_7": streak_info(user_id)["streak"],
+        "challenger": db.query(
+            "SELECT COUNT(*) n FROM challenge_progress WHERE user_id = ? AND completed = 1",
+            (user_id,), one=True)["n"],
+        "perfect_round": db.query(
+            "SELECT COUNT(*) n FROM practice_sessions WHERE user_id = ? AND accuracy >= 100",
+            (user_id,), one=True)["n"],
+    }
+
+    # Jumlah sesi per kategori & per sistem isyarat (satu query).
+    cat_n, sys_n = {}, {}
+    for row in db.query(
+        "SELECT m.category category, m.sign_system system, COUNT(*) n "
+        "FROM practice_sessions s JOIN materials m ON m.id = s.material_id "
+        "WHERE s.user_id = ? GROUP BY m.category, m.sign_system",
+        (user_id,),
+    ):
+        cat_n[row["category"]] = cat_n.get(row["category"], 0) + row["n"]
+        sys_n[row["system"]] = sys_n.get(row["system"], 0) + row["n"]
+    current["master_alfabet"] = cat_n.get("alfabet", 0)
+    current["master_angka"] = cat_n.get("angka", 0)
+    current["sibi_explorer"] = sys_n.get("SIBI", 0)
+    current["bisindo_explorer"] = sys_n.get("BISINDO", 0)
+
+    return {
+        key: {"current": min(int(n), targets[key]), "target": targets[key]}
+        for key, n in current.items()
+    }
+
+
 def achievements(user_id: int):
     """List semua badge (unlocked/locked) plus tanggal unlock."""
     catalog = badge_catalog()

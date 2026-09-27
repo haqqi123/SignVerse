@@ -387,6 +387,24 @@ def _seed_demo_history():
                     )
 
 
+def _sync_badges_for_seeded_users():
+    """Evaluasi badge untuk user seed yang punya riwayat latihan.
+
+    evaluate_badges() hanya dipanggil setelah latihan live, sehingga akun
+    demo ber-riwayat tidak punya badge sama sekali. Sinkronisasi idempotent
+    ini (lihat _unlock yang cek duplikat) membuat achievement tampil
+    konsisten dengan data demo. Import lokal untuk hindari circular import.
+    """
+    from .gamification import evaluate_badges
+
+    rows = query(
+        "SELECT DISTINCT user_id FROM practice_sessions s JOIN users u "
+        "ON u.id = s.user_id WHERE u.role = 'student'"
+    )
+    for row in rows:
+        evaluate_badges(row["user_id"])
+
+
 def init_db(reset=False, seed=True):
     """Buat schema + data dasar. Idempotent (aman dipanggil tiap start)."""
     if reset and os.path.exists(DB_PATH):
@@ -399,3 +417,4 @@ def init_db(reset=False, seed=True):
         _seed_badges()
         _seed_challenges()
         _seed_demo_history()
+        _sync_badges_for_seeded_users()
