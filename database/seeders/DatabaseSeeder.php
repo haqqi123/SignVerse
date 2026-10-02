@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Hash;
  *   guru@signteach.id / guru123  (teacher)
  *   siswa@signteach.id / siswa123 (student) + 4 student lainnya
  *
- * Data konten (categories, materials, lessons, achievements, challenges,
- * practice sessions demo) di-seed di Phase 2 sesuai ERD yang disetujui.
+ * Urutan: akun demo → konten pembelajaran → achievement →
+ * data practice/challenge demo → demo assignment (phase 6).
  */
 class DatabaseSeeder extends Seeder
 {
@@ -53,5 +53,12 @@ class DatabaseSeeder extends Seeder
             ]);
             $user->student()->create();
         }
+
+        // Phase 2 — konten, gamifikasi, dan data latihan demo
+        $this->call([
+            ContentSeeder::class,
+            AchievementSeeder::class,
+            DemoPracticeSeeder::class,
+        ]);
     }
 }

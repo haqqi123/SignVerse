@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- * Dashboard student — statistik belajar (XP, level, streak, progress),
- * aktivitas latihan terakhir, dan rekomendasi lesson (phase 3).
+ * Progress belajar student (phase 3): persentase lesson lulus per kategori
+ * + riwayat latihan lengkap.
  */
-class StudentDashboardController extends Controller
+class ProgressController extends Controller
 {
     public function __construct(
         private StudentStatsService $stats,
@@ -19,15 +19,12 @@ class StudentDashboardController extends Controller
 
     public function __invoke(Request $request): View
     {
-        $user = $request->user();
-        $student = $this->stats->forUser($user);
+        $student = $this->stats->forUser($request->user());
 
-        return view('student.dashboard', [
-            'user' => $user,
+        return view('student.progress', [
             'summary' => $this->stats->dashboardSummary($student),
             'progress' => $this->stats->progressByCategory($student),
-            'recentSessions' => $this->stats->recentSessions($student),
-            'recommended' => $this->stats->recommendedLessons($student),
+            'sessions' => $this->stats->recentSessions($student, 20),
         ]);
     }
 }

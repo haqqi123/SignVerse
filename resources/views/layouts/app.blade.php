@@ -34,24 +34,30 @@
                    class="nav-link {{ request()->routeIs('student.dashboard') ? 'nav-link-active' : '' }}">
                     <span>🏠</span> Dashboard
                 </a>
-                <span class="nav-link cursor-not-allowed opacity-40" title="Segera (Phase 3)">
+                <a href="{{ route('student.materials.index') }}"
+                   class="nav-link {{ request()->routeIs('student.materials.*') ? 'nav-link-active' : '' }}">
                     <span>📚</span> Materi Belajar
-                </span>
-                <span class="nav-link cursor-not-allowed opacity-40" title="Segera (Phase 4)">
+                </a>
+                <a href="{{ route('student.practice.index') }}"
+                   class="nav-link {{ request()->routeIs('student.practice.*') ? 'nav-link-active' : '' }}">
                     <span>✋</span> AI Practice
-                </span>
-                <span class="nav-link cursor-not-allowed opacity-40" title="Segera (Phase 5)">
+                </a>
+                <a href="{{ route('student.challenge.show') }}"
+                   class="nav-link {{ request()->routeIs('student.challenge.*') ? 'nav-link-active' : '' }}">
                     <span>🎯</span> Challenge Harian
-                </span>
-                <span class="nav-link cursor-not-allowed opacity-40" title="Segera (Phase 3)">
+                </a>
+                <a href="{{ route('student.progress') }}"
+                   class="nav-link {{ request()->routeIs('student.progress') ? 'nav-link-active' : '' }}">
                     <span>📈</span> Progress
-                </span>
-                <span class="nav-link cursor-not-allowed opacity-40" title="Segera (Phase 5)">
+                </a>
+                <a href="{{ route('student.achievements.index') }}"
+                   class="nav-link {{ request()->routeIs('student.achievements.*') ? 'nav-link-active' : '' }}">
                     <span>🏆</span> Achievement
-                </span>
-                <span class="nav-link cursor-not-allowed opacity-40" title="Segera (Phase 6)">
+                </a>
+                <a href="{{ route('student.assignments.index') }}"
+                   class="nav-link {{ request()->routeIs('student.assignments.*') ? 'nav-link-active' : '' }}">
                     <span>📝</span> Assignment
-                </span>
+                </a>
                 <span class="nav-link cursor-not-allowed opacity-40" title="Segera (Phase 9)">
                     <span>💬</span> Inclusive Communication
                 </span>
@@ -61,12 +67,14 @@
                    class="nav-link {{ request()->routeIs('teacher.dashboard') ? 'nav-link-active' : '' }}">
                     <span>🏠</span> Dashboard
                 </a>
-                <span class="nav-link cursor-not-allowed opacity-40" title="Segera (Phase 7)">
+                <a href="{{ route('teacher.students.index') }}"
+                   class="nav-link {{ request()->routeIs('teacher.students.*') ? 'nav-link-active' : '' }}">
                     <span>👥</span> Siswa
-                </span>
-                <span class="nav-link cursor-not-allowed opacity-40" title="Segera (Phase 6)">
+                </a>
+                <a href="{{ route('teacher.assignments.index') }}"
+                   class="nav-link {{ request()->routeIs('teacher.assignments.*') ? 'nav-link-active' : '' }}">
                     <span>📋</span> Assignment
-                </span>
+                </a>
                 <span class="nav-link cursor-not-allowed opacity-40" title="Segera (Phase 8)">
                     <span>📊</span> Laporan & Report
                 </span>
@@ -122,6 +130,12 @@
             <nav class="flex-1 space-y-1 px-4 py-5">
                 @if (auth()->user()->isStudent())
                     <a href="{{ route('student.dashboard') }}" class="nav-link"><span>🏠</span> Dashboard</a>
+                    <a href="{{ route('student.materials.index') }}" class="nav-link"><span>📚</span> Materi Belajar</a>
+                    <a href="{{ route('student.practice.index') }}" class="nav-link"><span>✋</span> AI Practice</a>
+                    <a href="{{ route('student.challenge.show') }}" class="nav-link"><span>🎯</span> Challenge Harian</a>
+                    <a href="{{ route('student.progress') }}" class="nav-link"><span>📈</span> Progress</a>
+                    <a href="{{ route('student.achievements.index') }}" class="nav-link"><span>🏆</span> Achievement</a>
+                    <a href="{{ route('student.assignments.index') }}" class="nav-link"><span>📝</span> Assignment</a>
                 @else
                     <a href="{{ route('teacher.dashboard') }}" class="nav-link"><span>🏠</span> Dashboard</a>
                 @endif
@@ -162,5 +176,6 @@
         </main>
     </div>
 </div>
+@stack('scripts')
 </body>
 </html>
