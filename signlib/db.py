@@ -195,18 +195,18 @@ def _seed_users():
 
 def _seed_materials_and_lessons():
     material_rows = [
-        ("alfabet", "SIBI", "Alfabet SIBI",
-         "Alfabet isyarat A–Z Sistem Isyarat Bahasa Indonesia (SIBI) resmi.", 0),
-        ("alfabet", "BISINDO", "Alfabet BISINDO",
-         "Alfabet isyarat A–Z dengan ragam Bahasa Isyarat Indonesia (BISINDO).", 1),
-        ("angka", "SIBI", "Angka SIBI",
-         "Angka 1–10 SIBI. Dipraktikkan lewat ejaan abjad (contoh: SATU = S-A-T-U).", 2),
-        ("angka", "BISINDO", "Angka BISINDO",
-         "Angka 1–10 BISINDO dengan variasi regional.", 3),
-        ("kosakata", "SIBI", "Kosakata Dasar SIBI",
-         "Kata sehari-hari SIBI untuk komunikasi dasar.", 4),
-        ("kosakata", "BISINDO", "Kosakata Dasar BISINDO",
-         "Kata sehari-hari ragam BISINDO.", 5),
+    ("alfabet", "SIBI", "Alfabet SIBI",
+        "Alfabet isyarat A–Z Sistem Isyarat Bahasa Indonesia (SIBI) resmi.", 0),
+    ("alfabet", "BISINDO", "Alfabet BISINDO",
+        "Alfabet isyarat A–Z dengan ragam Bahasa Isyarat Indonesia (BISINDO).", 1),
+    ("angka", "SIBI", "Angka SIBI",
+        "Angka 1–10 SIBI. Dipraktikkan lewat ejaan abjad (contoh: SATU = S-A-T-U).", 2),
+    ("angka", "BISINDO", "Angka BISINDO",
+        "Angka 1–10 BISINDO dengan variasi regional.", 3),
+    ("kosakata", "SIBI", "Kosakata Dasar SIBI",
+        "Kata sehari-hari SIBI untuk komunikasi dasar.", 4),
+    ("kosakata", "BISINDO", "Kosakata Dasar BISINDO",
+        "Kata sehari-hari ragam BISINDO.", 5),
     ]
     for cat, system, title, desc, order in material_rows:
         if not query("SELECT id FROM materials WHERE title = ?", (title,), one=True):

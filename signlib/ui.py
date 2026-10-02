@@ -7,13 +7,13 @@ card rounded, border tipis, shadow halus. Mengganti dark glassmorphism lama.
 import streamlit as st
 
 # ── Design tokens ──────────────────────────────────────────────────────
-PRIMARY = "#6366f1"
-PRIMARY_DARK = "#4f46e5"
-SECONDARY = "#0ea5b7"
-BG = "#f7f6fd"
-CARD_BORDER = "#e5e4f0"
-TEXT = "#1e1b3a"
-MUTED = "#6b6a86"
+PRIMARY = "#D4AF37"        
+PRIMARY_DARK = "#B8860B"   
+SECONDARY = "#1E3A8A"     
+BG = "#07113D"            
+CARD_BORDER = "#D4AF37"
+TEXT = "#F8F5E4"           
+MUTED = "#C7B77A"
 RADIUS = "14px"
 
 CSS = f"""
@@ -22,7 +22,17 @@ CSS = f"""
 
 html, body, [data-testid="stAppViewContainer"], .stApp {{
     font-family: 'Outfit', -apple-system, sans-serif;
-    background: {BG};
+    background:
+        radial-gradient(circle at top left,
+            rgba(212,175,55,0.18),
+            transparent 30%),
+        linear-gradient(
+            135deg,
+            #030B2D,
+            #07113D,
+            #0A1C63,
+            #07113D
+        );
     color: {TEXT};
 }}
 
@@ -45,39 +55,95 @@ h1, h2, h3, h4 {{ font-family: 'Outfit', sans-serif; color: {TEXT}; }}
 }}
 
 /* Stat card */
-.stat-card {{
-    background: #ffffff;
-    border: 1px solid {CARD_BORDER};
+.st-card {{
+    background: rgba(5, 15, 60, 0.85);
+    border: 1px solid #D4AF37;
     border-radius: {RADIUS};
-    padding: 1rem 1.2rem;
-    box-shadow: 0 1px 3px rgba(30, 27, 58, 0.04);
+    box-shadow:
+        0 0 15px rgba(212,175,55,0.15),
+        0 4px 20px rgba(0,0,0,0.4);
+    backdrop-filter: blur(8px);
 }}
 .stat-card .stat-label {{ font-size: 0.8rem; color: {MUTED}; font-weight: 600; }}
 .stat-card .stat-value {{ font-size: 1.6rem; font-weight: 800; color: {TEXT}; margin-top: 0.2rem; }}
 .stat-card .stat-delta {{ font-size: 0.75rem; color: {SECONDARY}; font-weight: 600; }}
 
 /* Button */
-.stButton > button, [data-testid="stButton"] button {{
-    background: {PRIMARY};
-    color: #ffffff;
+.stButton > button,
+[data-testid="stButton"] button {{
+    background: linear-gradient(
+        90deg,
+        #B8860B,
+        #D4AF37,
+        #F6E27A
+    );
+    color: #06133D;
+    font-weight: 800;
     border: none;
-    border-radius: 10px;
-    padding: 0.5rem 1.4rem;
-    font-weight: 600;
-    transition: all 0.15s;
+    box-shadow:
+        0 0 15px rgba(212,175,55,0.35);
+    border-radius: 12px;
 }}
-.stButton > button:hover, [data-testid="stButton"] button:hover {{
-    background: {PRIMARY_DARK};
-    color: #fff;
-    transform: translateY(-1px);
+.stButton > button:hover,
+[data-testid="stButton"] button:hover {{
+    background: linear-gradient(
+        90deg,
+        #D4AF37,
+        #F6E27A
+    );
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 25px rgba(212,175,55,0.55);
 }}
 
-/* Input */
-[data-testid="stTextInput"] input, [data-testid="stNumberInput"] input,
-[data-testid="stDateInput"] input, [data-testid="stSelectbox"] > div > div,
-[data-testid="stMultiSelect"] > div > div {{
-    border-radius: 10px;
-    border: 1px solid {CARD_BORDER};
+/* Sidebar */
+[data-testid="stSidebar"] {{
+    background: linear-gradient(
+        180deg,
+        #030B2D,
+        #07113D,
+        #0A1C63
+    );
+    border-right: 2px solid #D4AF37;
+}}
+
+/* Terapkan font & warna ke teks, KECUALI ikon */
+[data-testid="stSidebar"] *:not([data-testid="stIconMaterial"]):not(.material-icons):not(.material-symbols-rounded) {{
+    font-family: 'Outfit', sans-serif;
+}}
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] a,
+[data-testid="stSidebar"] button {{
+    color: {TEXT} !important;
+    opacity: 1 !important;
+}}
+
+/* Kembalikan font ikon supaya tampil sebagai panah, bukan teks "keyb..." */
+[data-testid="stIconMaterial"],
+.material-icons,
+.material-symbols-rounded,
+[data-testid="stSidebarCollapseButton"] span,
+[data-testid="stSidebarCollapsedControl"] span,
+[data-testid="stExpanderToggleIcon"] {{
+    font-family: 'Material Symbols Rounded', 'Material Icons' !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    white-space: nowrap !important;
+    -webkit-font-feature-settings: 'liga';
+    font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}}
+
+[data-testid="stTextInput"] input,
+[data-testid="stNumberInput"] input,
+[data-testid="stDateInput"] input {{
+    background: rgba(4, 15, 55, 0.8);
+    color: #F8F5E4;
+    border: 1px solid #D4AF37;
+    border-radius: 12px;
 }}
 
 /* Tag/badge */
@@ -96,8 +162,16 @@ h1, h2, h3, h4 {{ font-family: 'Outfit', sans-serif; color: {TEXT}; }}
 /* Hero landing */
 .hero {{ text-align: center; padding: 2rem 0.5rem 3rem; }}
 .hero h1 {{ font-size: 3rem; font-weight: 800; letter-spacing: -0.02em; }}
-.hero .grad {{ background: linear-gradient(90deg, {PRIMARY}, {SECONDARY});
-             -webkit-background-clip: text; -webkit-text-fill-color: transparent; }}
+.hero .grad {{
+    background: linear-gradient(
+        90deg,
+        #F6E27A,
+        #D4AF37,
+        #B8860B
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}}
 .hero .sub {{ color: {MUTED}; font-size: 1.15rem; margin-top: 0.4rem; }}
 
 .section-title {{ font-size: 1.5rem; font-weight: 800; margin-bottom: 0.2rem; }}
@@ -116,6 +190,20 @@ h1, h2, h3, h4 {{ font-family: 'Outfit', sans-serif; color: {TEXT}; }}
 
 /* Metric & alert dirapikan */
 [data-testid="stMetricValue"] {{ font-weight: 800; }}
+
+/* Footer */
+.app-footer {{
+    width: 100%;
+    margin-top: 3rem;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    color: {MUTED};
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(212,175,55,0.35);
+}}
+@media (max-width: 768px) {{
+    .app-footer {{ font-size: 0.78rem; }}
+}}
 
 /* Responsive */
 @media (max-width: 768px) {{
@@ -149,7 +237,7 @@ def stat_card(label, value, delta=None, key=None):
 
 def badge(text, color="indigo"):
     cls = {"indigo": "badge-indigo", "teal": "badge-teal",
-           "amber": "badge-amber", "gray": "badge-gray"}.get(color, "badge-gray")
+        "amber": "badge-amber", "gray": "badge-gray"}.get(color, "badge-gray")
     return f'<span class="st-badge {cls}">{text}</span>'
 
 
@@ -197,3 +285,9 @@ def empty_state(emoji, text):
         unsafe_allow_html=True,
     )
 
+def footer():
+    st.markdown(
+        '<div class="app-footer">SignTeach © 2026 — Platform AI Pembelajaran '
+        'Bahasa Isyarat Indonesia · SIBI · BISINDO</div>',
+        unsafe_allow_html=True,
+    )

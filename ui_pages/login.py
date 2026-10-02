@@ -7,7 +7,7 @@ from signlib.auth import current_user, login, redirect_after_login
 
 if current_user():
     st.switch_page("ui_pages/student_dashboard.py" if current_user()["role"] == "student"
-                   else "ui_pages/teacher_dashboard.py")
+                else "ui_pages/teacher_dashboard.py")
 
 ui.section_header("Masuk ke SignTeach", "Gunakan akun kamu untuk melanjutkan belajar")
 

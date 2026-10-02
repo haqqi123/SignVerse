@@ -18,7 +18,7 @@ cases = [
     ("practice running (kamera off)", {"practice_lesson_id": 1, "practice_status": "running"}),
     ("practice idle + lesson dipilih", {"practice_lesson_id": 1, "practice_status": "idle"}),
     ("assignment + practice state", {"practice_lesson_id": 1, "practice_status": "idle",
-                                     "last_assignment_completed": ["Latihan Alfabet"]}),
+                                    "last_assignment_completed": ["Latihan Alfabet"]}),
 ]
 
 from signlib.practice_state import SessionMemory  # noqa: E402

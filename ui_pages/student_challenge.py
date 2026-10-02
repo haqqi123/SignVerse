@@ -25,8 +25,8 @@ if challenges:
             f'Progress: {prog}/{ch["target"]} · Reward: +{ch["reward_xp"]} XP</div>'
             + ui.xp_bar_html(pct, height=8) +
             (f'<div style="color:{ui.SECONDARY};font-weight:700;margin-top:0.4rem">'
-             f'Reward +{ch["reward_xp"]} XP diberikan! 🎉</div>'
-             if ch["completed"] else "") +
+            f'Reward +{ch["reward_xp"]} XP diberikan! 🎉</div>'
+            if ch["completed"] else "") +
             f'</div>',
             unsafe_allow_html=True,
         )

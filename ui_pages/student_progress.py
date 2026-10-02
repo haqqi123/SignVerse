@@ -23,7 +23,7 @@ with c2:
     ui.stat_card("Akurasi Rata-rata", f"{stats['avg_accuracy']:.0f}%")
 with c3:
     ui.stat_card("Level", level["name"],
-                 delta=f"{xp:,} XP")
+                delta=f"{xp:,} XP")
 with c4:
     ui.stat_card("Streak", f"{streak['streak']} hari 🔥")
 

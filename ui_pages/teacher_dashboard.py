@@ -59,10 +59,10 @@ ui.section_mini("Aksi Cepat")
 b1, b2, b3 = st.columns(3)
 with b1:
     st.button("Lihat Siswa", use_container_width=True,
-              on_click=lambda: st.switch_page("ui_pages/teacher_students.py"))
+            on_click=lambda: st.switch_page("ui_pages/teacher_students.py"))
 with b2:
     st.button("Buat Assignment", use_container_width=True,
-              on_click=lambda: st.switch_page("ui_pages/teacher_assignments.py"))
+            on_click=lambda: st.switch_page("ui_pages/teacher_assignments.py"))
 with b3:
     st.button("Lihat Report", use_container_width=True,
-              on_click=lambda: st.switch_page("ui_pages/teacher_reports.py"))
+            on_click=lambda: st.switch_page("ui_pages/teacher_reports.py"))

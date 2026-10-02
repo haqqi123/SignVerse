@@ -79,9 +79,9 @@ history = service.practice_history(student_id, 10)
 if history:
     rows = [
         {"Tanggal": h["created_at"][:16], "Materi": h["material_title"] or "-",
-         "Latihan": h["lesson_title"] or h["target"],
-         "Akurasi": f'{h["accuracy"]:.0f}%',
-         "Skor": f'{h["final_score"]:.0f}', "Grade": h["grade"]}
+        "Latihan": h["lesson_title"] or h["target"],
+        "Akurasi": f'{h["accuracy"]:.0f}%',
+        "Skor": f'{h["final_score"]:.0f}', "Grade": h["grade"]}
         for h in history
     ]
     st.table(rows)
@@ -116,7 +116,7 @@ assignments = service.student_assignments(student_id)
 if assignments:
     rows = [
         {"Judul": a["title"], "Materi": a["material_title"] or "-",
-         "Status": a["status"], "Deadline": a["deadline"] or "-"}
+        "Status": a["status"], "Deadline": a["deadline"] or "-"}
         for a in assignments
     ]
     st.table(rows)

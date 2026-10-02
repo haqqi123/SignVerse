@@ -23,9 +23,9 @@ newest_unlocked = [a for a in achievements if a["unlocked"]]
 
 hour = datetime.now().hour
 greet = ("Selamat pagi" if hour < 11
-         else "Selamat siang" if hour < 15
-         else "Selamat sore" if hour < 19
-         else "Selamat malam")
+        else "Selamat siang" if hour < 15
+        else "Selamat sore" if hour < 19
+        else "Selamat malam")
 
 
 def _goto_lesson(lesson_id):
@@ -38,7 +38,7 @@ st.caption("Selamat datang kembali di dashboard belajarmu.")
 c1, c2, c3 = st.columns([2, 1, 1])
 with c1:
     ui.stat_card("Progress Belajar", f"{stats['avg_accuracy']:.0f}%",
-                 delta=f"{stats['total_sessions']} sesi latihan")
+                delta=f"{stats['total_sessions']} sesi latihan")
 with c2:
     ui.stat_card("Level", level["name"])
 with c3:
@@ -46,7 +46,7 @@ with c3:
 
 st.markdown(
     ui.xp_bar_html(level["pct"],
-                   label=f'Level {level["name"]}', height=10),
+                label=f'Level {level["name"]}', height=10),
     unsafe_allow_html=True,
 )
 if level["next_xp"] is not None:
@@ -82,11 +82,11 @@ with left:
             unsafe_allow_html=True,
         )
         st.button("Lanjutkan Latihan", type="primary",
-                  on_click=lambda: _goto_lesson(last["lesson_id"]))
+                on_click=lambda: _goto_lesson(last["lesson_id"]))
     else:
         ui.empty_state("🚀", "Belum ada latihan. Mulai dari materi Alfabet!")
         st.button("Mulai Latihan", type="primary",
-                  on_click=lambda: st.switch_page("ui_pages/student_practice.py"))
+                on_click=lambda: st.switch_page("ui_pages/student_practice.py"))
 
     st.divider()
     ui.section_mini("AI Learning Recommendation", "Rekomendasi berdasarkan datamu")
