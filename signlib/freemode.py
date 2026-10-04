@@ -93,7 +93,7 @@ def render_free_mode(key: str, mode_title: str = "Mode Bebas"):
             )
         except Exception as e:
             st.warning("Kamera tidak tersedia di sesi ini. "
-                       "Gunakan browser yang mendukung WebRTC.")
+                    "Gunakan browser yang mendukung WebRTC.")
             ctx = None
 
     with right:
@@ -110,13 +110,13 @@ def render_free_mode(key: str, mode_title: str = "Mode Bebas"):
         b1, b2, b3 = st.columns(3)
         with b1:
             st.button("⏪ Hapus huruf", use_container_width=True,
-                      on_click=_backspace)
+                    on_click=_backspace)
         with b2:
             st.button("✔ Simpan kata", use_container_width=True,
-                      on_click=_save_word)
+                    on_click=_save_word)
         with b3:
             st.button("🗑 Reset", use_container_width=True,
-                      on_click=_reset_letters)
+                    on_click=_reset_letters)
 
         st.divider()
         st.markdown('<div style="font-weight:800">History</div>', unsafe_allow_html=True)

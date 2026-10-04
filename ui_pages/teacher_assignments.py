@@ -60,7 +60,7 @@ for a in assignments:
         items = service.assignment_students(a["id"])
         rows = [
             {"Siswa": it["name"], "Status": it["status"],
-             "Selesai": it["completed_at"][:10] if it["completed_at"] else "-"}
+            "Selesai": it["completed_at"][:10] if it["completed_at"] else "-"}
             for it in items
         ]
         st.table(rows)

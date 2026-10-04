@@ -9,7 +9,7 @@ if current_user():
     if redirect_after_login(current_user()):
         st.stop()
     st.switch_page("ui_pages/student_dashboard.py" if current_user()["role"] == "student"
-                   else "ui_pages/teacher_dashboard.py")
+                else "ui_pages/teacher_dashboard.py")
 
 ui.section_header("Daftar Akun Baru", "Mulai belajar Bahasa Isyarat Indonesia hari ini")
 
@@ -51,4 +51,4 @@ st.markdown(
 b1, b2, b3 = st.columns([1, 1, 1])
 with b2:
     st.button("Masuk ke Akun", use_container_width=True,
-              on_click=lambda: st.switch_page("ui_pages/login.py"))
+            on_click=lambda: st.switch_page("ui_pages/login.py"))

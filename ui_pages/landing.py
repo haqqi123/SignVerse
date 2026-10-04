@@ -7,7 +7,7 @@ from signlib.auth import current_user
 
 if current_user():
     target = ("ui_pages/student_dashboard.py" if current_user()["role"] == "student"
-              else "ui_pages/teacher_dashboard.py")
+            else "ui_pages/teacher_dashboard.py")
     st.switch_page(target)
 
 # CTA 'Coba AI Practice' hanya berlaku untuk kunjungan saat ini;
@@ -126,21 +126,52 @@ with t2:
 
 st.divider()
 
-# ── CTA & Footer ───────────────────────────────────────────────────────
+# ── CTA ────────────────────────────────────────────────────────────────
 st.markdown(
-    f'<div class="st-card" style="text-align:center;padding:2.4rem 1.5rem">'
-    f'<div style="font-size:1.5rem;font-weight:800">Siap memulai perjalanan isyaratmu?</div>'
-    f'<div style="color:{ui.MUTED};margin:0.5rem 0 1.2rem">Daftar dan mulai belajar hari ini.</div>'
-    f'</div>',
+    f'''
+    <div class="st-card" style="text-align:center;padding:2.4rem 1.5rem">
+        <div style="font-size:1.5rem;font-weight:800">
+            Siap memulai perjalanan isyaratmu?
+        </div>
+        <div style="color:{ui.MUTED};margin:0.5rem 0 1.2rem">
+            Daftar dan mulai belajar hari ini.
+        </div>
+    </div>
+    ''',
     unsafe_allow_html=True,
 )
-btn_c1, btn_c2, btn_c3 = st.columns([1, 1, 1])
+
+btn_c1, btn_c2, btn_c3 = st.columns([1,1,1])
 with btn_c2:
-    st.button("Mulai Belajar Sekarang", type="primary", use_container_width=True,
-              on_click=lambda: st.switch_page("ui_pages/login.py"))
+    st.button(
+        "Mulai Belajar Sekarang",
+        type="primary",
+        use_container_width=True,
+        on_click=lambda: st.switch_page("ui_pages/login.py")
+    )
+
+st.markdown("<div style='height:80px'></div>", unsafe_allow_html=True)
 
 st.markdown(
-    f'<div style="text-align:center;color:{ui.MUTED};font-size:0.8rem;margin-top:1.6rem">'
-    f'SignTeach © 2026 — Platform AI Pembelajaran Bahasa Isyarat Indonesia · SIBI · BISINDO</div>',
+    """
+    <style>
+    .signteach-footer {
+        width: 100%;
+        margin-top: 3rem;
+        padding: 1.2rem 1rem;
+        text-align: center;
+        color: #E7C75F;
+        font-size: 0.9rem;
+        border-top: 1px solid rgba(231,199,95,0.4);
+        box-sizing: border-box;
+    }
+    @media (max-width: 768px) {
+        .signteach-footer { font-size: 0.75rem; }
+    }
+    </style>
+    <div class="signteach-footer">
+        SignTeach © 2026 — Platform AI Pembelajaran Bahasa Isyarat Indonesia · SIBI · BISINDO
+    </div>
+    """,
     unsafe_allow_html=True,
 )

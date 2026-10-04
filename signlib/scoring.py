@@ -3,10 +3,10 @@
 Formula sederhana, transparan, dan mudah diubah:
 
     accuracy    = jumlah huruf benar / total percobaan * 100
-                  (total percobaan = huruf benar yang direkam + gestur salah yang terdeteksi)
-                  Catatan: data seed demo (db.py) memakai benar/target; sesi live memakai benar/percobaan.
+                (total percobaan = huruf benar yang direkam + gestur salah yang terdeteksi)
+                Catatan: data seed demo (db.py) memakai benar/target; sesi live memakai benar/percobaan.
     speed       = 100 jika rata-rata waktu per huruf <= 3.5 detik,
-                  menurun linear sampai 40 pada ~7.8 detik/huruf
+                menurun linear sampai 40 pada ~7.8 detik/huruf
     consistency = 100 - (selisih max-min confidence * 120), dibatasi 0..100
     completion  = huruf yang berhasil direkam / total huruf * 100
     final_score = 0.4*accuracy + 0.2*speed + 0.2*consistency + 0.2*completion
@@ -39,7 +39,7 @@ def compute_assessment(letters, captures, confidences, durations_s, wrong_count=
     confidences  : confidence tiap prediksi
     durations_s  : waktu (detik) yang dihabiskan untuk tiap huruf
     wrong_count  : jumlah percobaan salah (gestur salah tidak memajukan progress).
-                   Accuracy dihitung terhadap total percobaan agar jujur.
+                Accuracy dihitung terhadap total percobaan agar jujur.
     """
     total = max(1, len(letters))
     done = min(len(captures), total)

@@ -124,9 +124,9 @@ def _save_session(mem_, assessment):
         "consistency, completion, final_score, grade, xp_earned, duration_s) "
         "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
         (uid, lesson["material_id"], lesson["id"], target, mode,
-         assessment["accuracy"], assessment["speed"], assessment["consistency"],
-         assessment["completion"], assessment["final"], assessment["grade"],
-         10, round(mem_.duration_s(), 1)),
+        assessment["accuracy"], assessment["speed"], assessment["consistency"],
+        assessment["completion"], assessment["final"], assessment["grade"],
+        10, round(mem_.duration_s(), 1)),
     )
     for i in range(len(mem_.captures)):
         expected = letters[i] if i < len(letters) else ""
@@ -137,7 +137,7 @@ def _save_session(mem_, assessment):
             "(session_id, seq, expected, predicted, confidence, is_correct, feedback, duration_ms) "
             "VALUES (?,?,?,?,?,?,?,?)",
             (sid, i, expected, predicted, mem_.confidences[i],
-             int(predicted == expected), feedback,
+            int(predicted == expected), feedback,
              int(mem_.durations[i] * 1000)),
         )
     for wi, w in enumerate(mem_.wrong_attempts):
@@ -146,8 +146,8 @@ def _save_session(mem_, assessment):
             "(session_id, seq, expected, predicted, confidence, is_correct, feedback, duration_ms) "
             "VALUES (?,?,?,?,?,?,?,?)",
             (sid, len(mem_.captures) + wi, w["expected"], w["predicted"],
-             w["confidence"], 0,
-             scoring.feedback_for(w["expected"], w["predicted"], w["confidence"]), 0),
+            w["confidence"], 0,
+            scoring.feedback_for(w["expected"], w["predicted"], w["confidence"]), 0),
         )
     service.bump_challenge(uid, service.get_material(lesson["material_id"])["category"])
     evaluate_badges(uid)
@@ -259,7 +259,7 @@ with left:
         )
     except Exception:
         st.warning("Kamera tidak tersedia di sesi ini. Gunakan browser "
-                   "yang mendukung WebRTC (Chrome/Edge).")
+                "yang mendukung WebRTC (Chrome/Edge).")
         webrtc_ctx = None
 
 with right:
@@ -277,7 +277,7 @@ with right:
             unsafe_allow_html=True,
         )
         st.button("▶ Mulai Latihan", type="primary", use_container_width=True,
-                  on_click=start_session)
+                on_click=start_session)
         st.button("📚 Ganti Latihan", use_container_width=True, on_click=_reset_lesson)
     elif status == "running":
         if "practice_mem" not in st.session_state:
@@ -293,7 +293,7 @@ with right:
                 unsafe_allow_html=True,
             )
             st.button("▶ Mulai Latihan", type="primary", use_container_width=True,
-                      on_click=start_session)
+                    on_click=start_session)
         else:
             mem = st.session_state["practice_mem"]
             snap = state.snapshot()
@@ -317,7 +317,7 @@ with right:
                 wrong_msg = scoring.feedback_for(current, det, snap["confidence"])
                 if (now_ - mem.last_wrong_at > WRONG_COOLDOWN_S
                         and (not mem.wrong_attempts
-                             or mem.wrong_attempts[-1]["predicted"] != det)):
+                            or mem.wrong_attempts[-1]["predicted"] != det)):
                     mem.wrong_attempts.append({
                         "expected": current, "predicted": det,
                         "confidence": snap["confidence"],
@@ -353,9 +353,9 @@ with right:
                     + f'<div style="color:{ui.MUTED};font-size:0.8rem;margin-top:0.4rem">'
                     f'akurasi sementara: {acc_so_far:.0f}%</div>'
                     + (f'<div style="color:#dc2626;font-weight:700;margin-top:0.5rem">'
-                       f'❌ Terdeteksi "{det}" — {wrong_msg}</div>' if wrong_msg
-                       else (f'<div style="color:{ui.SECONDARY};font-weight:600;'
-                             f'margin-top:0.4rem">✅ {feedback}</div>' if feedback and det else ""))
+                    f'❌ Terdeteksi "{det}" — {wrong_msg}</div>' if wrong_msg
+                    else (f'<div style="color:{ui.SECONDARY};font-weight:600;'
+                            f'margin-top:0.4rem">✅ {feedback}</div>' if feedback and det else ""))
                     + '</div>',
                     unsafe_allow_html=True,
                 )
@@ -388,20 +388,20 @@ with right:
         if done_assignments:
             st.success("✅ Tugas selesai otomatis: " + ", ".join(done_assignments))
         st.button("🔄 Ulangi Latihan", type="primary", use_container_width=True,
-                  on_click=start_session)
+                on_click=start_session)
         b1, b2 = st.columns(2)
         with b1:
             st.button("📚 Pilih Latihan Lain", use_container_width=True,
-                      on_click=_reset_lesson)
+                    on_click=_reset_lesson)
         with b2:
             st.button("📈 Ke Progress", use_container_width=True,
-                      on_click=lambda: st.switch_page("ui_pages/student_progress.py"))
+                    on_click=lambda: st.switch_page("ui_pages/student_progress.py"))
 
     st.markdown('</div>', unsafe_allow_html=True)
 
     if status == "running":
         st.button("Akhiri & Lihat Nilai", type="secondary", use_container_width=True,
-                  on_click=finish_session)
+                on_click=finish_session)
 
 # ── Assessment Result (setelah selesai) ────────────────────────────────
 if status == "done" and st.session_state.get("last_result"):
@@ -441,7 +441,7 @@ if status == "done" and st.session_state.get("last_result"):
     )
     if a.get("wrong_count"):
         st.caption(f"⚠️ {a['wrong_count']} percobaan salah terdeteksi selama latihan. "
-                   f"Perhatikan posisi telapak tangan dan jari agar lebih konsisten.")
+                f"Perhatikan posisi telapak tangan dan jari agar lebih konsisten.")
 
     ui.section_mini("Detail Huruf", "Status tiap huruf pada latihan ini")
     detail_rows = []

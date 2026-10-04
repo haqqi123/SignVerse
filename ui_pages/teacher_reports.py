@@ -17,8 +17,8 @@ with tab_class:
     if report:
         rows = [
             {"Nama": r["name"], "Akurasi": f'{r["accuracy"]:.0f}%',
-             "Avg Score": f'{r["score"]:.0f}', "Sesi": r["sessions"],
-             "Materi": r["materials"], "Terakhir Aktif": r["last_activity"]}
+            "Avg Score": f'{r["score"]:.0f}', "Sesi": r["sessions"],
+            "Materi": r["materials"], "Terakhir Aktif": r["last_activity"]}
             for r in report
         ]
         st.table(rows)
@@ -74,9 +74,9 @@ with tab_individual:
         if history:
             rows = [
                 {"Tanggal": h["created_at"][:16], "Materi": h["material_title"] or "-",
-                 "Latihan": h["lesson_title"] or h["target"],
-                 "Akurasi": f'{h["accuracy"]:.0f}%', "Skor": f'{h["final_score"]:.0f}',
-                 "Grade": h["grade"]}
+                "Latihan": h["lesson_title"] or h["target"],
+                "Akurasi": f'{h["accuracy"]:.0f}%', "Skor": f'{h["final_score"]:.0f}',
+                "Grade": h["grade"]}
                 for h in history
             ]
             st.table(rows)

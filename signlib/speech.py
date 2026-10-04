@@ -10,7 +10,7 @@ import streamlit as st
 
 
 def speak_button(text: str, key: str = "tts", label: str = "🔊 Putar Suara",
-                 rate: float = 0.95, lang: str = "id-ID"):
+                rate: float = 0.95, lang: str = "id-ID"):
     text = (text or "").strip()
     if not text:
         st.info("Belum ada teks untuk dibacakan.")
@@ -30,7 +30,7 @@ def speak_button(text: str, key: str = "tts", label: str = "🔊 Putar Suara",
     </script>
     <button onclick="{fn}()"
       style="background:#6366f1;color:#fff;border:none;border-radius:14px;
-             padding:10px 22px;font-size:1rem;font-weight:600;cursor:pointer;
-             font-family: Outfit, sans-serif">{label}</button>
+            padding:10px 22px;font-size:1rem;font-weight:600;cursor:pointer;
+            font-family: Outfit, sans-serif">{label}</button>
     """
     st.components.v1.html(f"<div>{js}</div>", height=60)

@@ -49,7 +49,7 @@ def render_material(material):
                     unsafe_allow_html=True,
                 )
                 if st.button("Latih", key=f"lesson_{lesson['id']}",
-                             use_container_width=True):
+                            use_container_width=True):
                     flow.start_practice(lesson["id"])
                     st.switch_page("ui_pages/student_practice.py")
 
