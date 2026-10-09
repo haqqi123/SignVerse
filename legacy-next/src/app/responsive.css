@@ -1,0 +1,156 @@
+@media (max-width: 1180px) {
+  .app-shell { grid-template-columns: 215px minmax(400px, 1fr); }
+  .right-panel { display: none; }
+  .main-column { max-width: 850px; padding-left: 30px; padding-right: 30px; }
+}
+
+@media (max-width: 760px) {
+  .app-shell { display: block; min-width: 0; }
+  .sidebar { position: fixed; left: -270px; top: 0; width: 255px; height: 100dvh; transition: left .22s; box-shadow: 8px 0 30px #183b3b18; }
+  .sidebar.sidebar-open { left: 0; }
+  .mobile-menu { position: fixed; left: 13px; top: 15px; z-index: 24; display: grid; place-items: center; width: 39px; height: 39px; border: 1px solid #e5ece7; border-radius: 12px; background: #fff; color: #337c70; }
+  .close-menu { display: grid !important; place-items: center; border: 0; background: transparent; color: #6e827a; margin-left: auto; }
+  .scrim { display: block; position: fixed; inset: 0; border: 0; background: #15323066; z-index: 29; }
+  .main-column { padding: 0 16px 30px; max-width: 620px; width: 100%; margin: 0 auto; }
+  .top-stats { padding-left: 46px; height: 68px; gap: 6px; margin-bottom: 16px; }
+  .system-select { padding: 0 7px; height: 34px; gap: 4px; }
+  .system-symbol { font-size: 15px; }
+  .stat-pill, .level-pill { height: 33px; padding: 0 7px; gap: 4px; font-size: 10px; }
+  .stat-pill small { display: none; }
+  .level-pill { font-size: 9px; }
+  .welcome-row { padding: 19px 16px; min-height: 154px; border-radius: 16px; }
+  .welcome-row h1 { font-size: 20px; }
+  .welcome-row p { max-width: 235px; font-size: 10px; line-height: 1.5; }
+  .welcome-art { width: 85px; height: 105px; margin: 0; }
+  .welcome-art > span { font-size: 52px; }
+  .art-sun { width: 82px; height: 82px; }
+  .welcome-art i { right: -9px; top: 10px; font-size: 8px; }
+  .path-section { padding-top: 20px; }
+  .path-intro h2 { font-size: 18px; }
+  .path-count { font-size: 9px; padding: 6px 8px; }
+  .chapter-header { padding: 11px; }
+  .chapter-icon { width: 35px; height: 35px; }
+  .path-node-row { width: 90%; }
+  .path-node-row.right { margin-left: 46%; }
+  .path-node-row.left { margin-left: -1%; }
+  .node-track:before { left: 50%; }
+  .node-copy .node-title { font-size: 10px; }
+  .node-copy { font-size: 8px; }
+  .lesson-node { width: 48px; height: 48px; min-width: 48px; }
+  .lesson-modal { padding: 20px; }
+  .focus-layout { padding: 0 13px 23px; }
+  .lesson-header { height: 66px; gap: 11px; }
+  .exercise-card { margin-top: 19px; padding: 21px 17px; border-radius: 18px; }
+  .exercise-card > h1 { font-size: 19px; margin: 15px 0 18px; }
+  .gesture-demo { height: 185px; }
+  .gesture-hand { font-size: 88px; }
+  .answer-grid { gap: 8px; }
+  .answer-option { min-height: 56px; padding: 8px; font-size: 10px; gap: 7px; }
+  .choice-letter { width: 25px; height: 25px; min-width: 25px; }
+  .practice-target { gap: 7px; padding: 10px; }
+  .practice-target span, .practice-target small { font-size: 8px; }
+  .camera-preview { height: 165px; }
+  .practice-actions { gap: 7px; }
+  .practice-actions .primary-button, .practice-actions .secondary-button { font-size: 8px; }
+  .result-screen { padding: 29px 3px; }
+  .result-screen h1 { font-size: 22px; }
+  .info-page { padding-top: 5px; }
+  .info-page > h1 { font-size: 22px; }
+  .practice-page-card, .challenge-large, .profile-card { padding: 18px; }
+  .achievement-grid { grid-template-columns: 1fr; }
+  .achievement-card { min-height: 86px; }
+  .progress-summary { gap: 7px; }
+  .summary-card { padding: 10px; }
+  .summary-card b { font-size: 16px; }
+  .summary-card span { font-size: 8px; }
+  .reset-area { align-items: flex-start; flex-direction: column; }
+  .reset-area small { padding-left: 8px; }
+  .practice-dashboard-grid { grid-template-columns: 1fr; }
+  .practice-side-stack { grid-template-columns: 1fr 1fr; }
+  .practice-encouragement { grid-column: 1 / -1; }
+  .practice-console { padding: 14px; }
+  .practice-target-select { display: grid; gap: 9px; }
+  .target-pills { justify-content: space-between; }
+  .target-pill { flex: 1; }
+  .studio-frame { height: 174px; }
+  .achievement-hero { min-height: 177px; }
+  .achievement-trophy-scene { width: 92px; height: 120px; margin: 0; }
+  .trophy-pedestal { width: 66px; height: 66px; border-radius: 22px; }
+  .trophy-pedestal svg { width: 38px; }
+  .trophy-ring.ring-a { width: 95px; height: 57px; }
+  .trophy-ring.ring-b { width: 79px; height: 90px; }
+  .trophy-tag { font-size: 6px; }
+  .achievement-collection-heading { display: grid; gap: 10px; align-items: start; }
+  .achievement-filter { width: max-content; }
+  .achievement-collection { grid-template-columns: 1fr; }
+  .badge-card { min-height: 104px; }
+  .progress-hero { min-height: 184px; }
+  .course-donut { width: 81px; height: 81px; min-width: 81px; margin: 0; }
+  .course-donut:before { inset: 7px; }
+  .course-donut b { font-size: 17px; }
+  .course-donut span { font-size: 6px; }
+  .progress-stat-grid { grid-template-columns: 1fr 1fr; gap: 7px; }
+  .progress-stat-card { padding: 10px; }
+  .progress-stat-card > b { font-size: 17px; }
+  .progress-detail-grid { grid-template-columns: 1fr; }
+  .consistency-card { display: grid; grid-template-columns: 33px 1fr; column-gap: 9px; }
+  .consistency-card > .eyebrow { grid-column: 1 / -1; }
+  .consistency-icon { grid-row: 2 / 5; margin: 6px 0; }
+  .consistency-card h2, .consistency-card > p, .challenge-meter-label, .consistency-card > .progress-track, .consistency-reward, .consistency-link { grid-column: 2; }
+  .activity-bars { height: 92px; }
+  .mini-path-list { grid-template-columns: 1fr 1fr; }
+  .progress-path-card { padding: 13px; }
+  .profile-fields { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 390px) {
+  .main-column { padding-left: 12px; padding-right: 12px; }
+  .top-stats { gap: 5px; padding-left: 45px; }
+  .system-select { font-size: 9px; }
+  .xp-pill { padding: 0 6px; }
+  .level-pill { font-size: 8px; }
+  .welcome-art { width: 69px; }
+  .welcome-row h1, .practice-hero h1, .achievement-hero h1, .progress-hero h1 { font-size: 19px; }
+  .path-node-row { width: 96%; }
+  .path-node-row.right { margin-left: 42%; }
+  .path-node-row.left { margin-left: -3%; }
+  .node-copy { max-width: 125px; }
+  .practice-hero-art { width: 72px; }
+  .practice-console { padding: 11px; }
+  .session-system { font-size: 8px; }
+  .practice-hero-badges { flex-wrap: wrap; }
+  .achievement-hero { padding: 16px 12px; }
+  .achievement-trophy-scene { width: 72px; }
+  .achievement-hero-stats { gap: 9px; }
+  .badge-card { padding: 10px; gap: 8px; }
+  .badge-medal { width: 45px; height: 45px; flex-basis: 45px; }
+  .badge-medal > span { font-size: 21px; }
+  .badge-card h3 { font-size: 10px; }
+  .course-donut { width: 69px; height: 69px; min-width: 69px; }
+  .activity-foot > small { font-size: 6px; }
+}
+/* Keep AI practice focused on the exercise; streak and daily goals live in the shared panel. */
+.practice-focused { padding-top: 8px; }
+.practice-page-heading { margin: 5px 0 20px; }
+.practice-page-heading h1 { margin: 5px 0 4px; font: 800 25px/1.2 Manrope, sans-serif; letter-spacing: -.6px; color: #183b3b; }
+.practice-page-heading p { margin: 0; color: #7a8d86; font-size: 12px; }
+.practice-focused .practice-dashboard-grid { grid-template-columns: minmax(0, 1fr) 218px; margin-top: 0; gap: 14px; }
+.practice-focused .practice-console { padding: 17px; }
+.practice-focused .practice-target-select { margin-top: 12px; }
+.practice-progress-card { padding: 17px; }
+.practice-progress-total { margin-top: 12px; color: #85968e; font-size: 11px; }
+.practice-progress-total b { color: #274d43; font: 800 27px Manrope, sans-serif; }
+.practice-progress-card .progress-track { margin: 9px 0 13px; }
+.practice-letter-list { display: grid; gap: 5px; }
+.practice-letter-list > div { display: flex; align-items: center; gap: 9px; padding: 7px 8px; border-radius: 9px; background: #f7f9f6; color: #9aa69f; }
+.practice-letter-list > div.complete { color: #36866e; background: #eff8f1; }
+.practice-letter-list > div > span { width: 23px; height: 23px; display: grid; place-items: center; border-radius: 7px; background: #fff; color: #59766c; font: 700 10px Manrope, sans-serif; }
+.practice-letter-list > div > small { flex: 1; font-size: 9px; }
+.practice-letter-list > div > svg { color: #48a783; }
+@media (max-width: 1100px) { .practice-focused .practice-dashboard-grid { grid-template-columns: minmax(0, 1fr) 190px; } }
+@media (max-width: 760px) {
+  .practice-focused .practice-dashboard-grid { grid-template-columns: 1fr; }
+  .practice-progress-card { display: none; }
+  .practice-page-heading { margin-bottom: 14px; }
+  .practice-page-heading h1 { font-size: 22px; }
+}
