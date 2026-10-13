@@ -88,8 +88,7 @@
             <div class="px-2 text-sm font-bold text-ink">{{ auth()->user()->name }}</div>
             <div class="mb-3 px-2 text-xs text-ink-muted">{{ auth()->user()->email }}</div>
             <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="btn-secondary w-full !py-2 text-sm">
+                @csrf                    <button type="submit" class="btn-secondary w-full min-h-[2rem] py-1.5 text-sm">
                     Keluar
                 </button>
             </form>
@@ -141,7 +140,7 @@
                 @endif
                 <form method="POST" action="{{ route('logout') }}" class="px-3 pt-4">
                     @csrf
-                    <button type="submit" class="btn-secondary w-full !py-2 text-sm">Keluar</button>
+                    <button type="submit" class="btn-secondary w-full min-h-[2rem] py-1.5 text-sm">Keluar</button>
                 </form>
             </nav>
         </aside>

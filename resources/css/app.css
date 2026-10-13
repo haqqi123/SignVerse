@@ -1,2 +1,63 @@
-@import './signteach.css';
+@import 'tailwindcss';
 
+@source '../views/**/*.blade.php';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+@config "../../tailwind.config.js";
+
+/* ── Komponen UI kustom SignVerse ───────────────────────────── */
+@layer components {
+    /* Tautan pada sidebar */
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        min-height: 2.9rem;
+        padding: 0 0.85rem;
+        border-radius: 0.8rem;
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: var(--color-ink-muted, #6b6a86);
+        transition: background-color 0.18s, color 0.18s;
+    }
+    .nav-link:hover {
+        background-color: rgb(238 240 255);
+        color: var(--color-primary-dark, #4f46e5);
+    }
+    .nav-link-active {
+        background-color: rgb(238 240 255);
+        color: var(--color-primary-dark, #4f46e5);
+        font-weight: 700;
+    }
+
+    /* Tombol utama & sekunder */
+    .btn-primary,
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        min-height: 2.75rem;
+        padding: 0 1.25rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+    .btn-primary {
+        background-color: #6366f1;
+        color: #ffffff;
+    }
+    .btn-primary:hover {
+        background-color: #4f46e5;
+        transform: translateY(-1px);
+    }
+    .btn-secondary {
+        background-color: rgb(241 241 245);
+        color: #1e1b3a;
+    }
+    .btn-secondary:hover {
+        background-color: rgb(228 228 234);
+    }
+}
