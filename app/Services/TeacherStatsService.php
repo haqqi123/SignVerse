@@ -7,6 +7,7 @@ use App\Models\PracticeSession;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 /**
@@ -65,7 +66,7 @@ class TeacherStatsService
     /**
      * Semua siswa dengan ringkasan aktivitas untuk tabel monitoring.
      *
-     * @return Collection<int, array{student: Student, name: string, sessions: int, avg_score: float, xp: int, level: int, streak: int, last_activity: \Illuminate\Support\Carbon|null}>
+     * @return Collection<int, array{student: Student, name: string, sessions: int, avg_score: float, xp: int, level: int, streak: int, last_activity: Carbon|null}>
      */
     public function studentsOverview(): Collection
     {
@@ -80,7 +81,7 @@ class TeacherStatsService
     /**
      * Ringkasan satu siswa (dipakai di tabel monitoring & halaman detail).
      *
-     * @return array{student: Student, name: string, sessions: int, avg_score: float, xp: int, level: int, streak: int, last_activity: \Illuminate\Support\Carbon|null}
+     * @return array{student: Student, name: string, sessions: int, avg_score: float, xp: int, level: string, streak: int, last_activity: Carbon|null}
      */
     public function studentSummary(Student $student): array
     {
@@ -88,15 +89,20 @@ class TeacherStatsService
             ->where('student_id', $student->id)
             ->where('status', PracticeSession::STATUS_COMPLETED);
 
+        $lastCompletedAt = (clone $completed)->max('completed_at');
+        $totalXp = $student->totalXp();
+
         return [
             'student' => $student,
             'name' => $student->user?->name ?? 'Siswa #'.$student->id,
             'sessions' => (int) (clone $completed)->count(),
             'avg_score' => round((float) (clone $completed)->avg('score'), 1),
-            'xp' => $student->totalXp(),
-            'level' => $student->level(),
-            'streak' => $student->current_streak,
-            'last_activity' => $student->last_activity_date,
+            'xp' => $totalXp,
+            'level' => GamificationService::levelFromXp($totalXp)['name'],
+            'streak' => GamificationService::streakInfo($student->user_id)['streak'],
+            'last_activity' => $lastCompletedAt !== null
+                ? Carbon::parse($lastCompletedAt)
+                : $student->last_activity_date,
         ];
     }
 
@@ -104,7 +110,8 @@ class TeacherStatsService
      * Detail lengkap satu siswa untuk halaman monitoring detail.
      *
      * @return array{
-     *     summary: array, recent_sessions: Collection, category_progress: Collection, achievements: Collection
+     *     summary: array, recent_sessions: Collection, category_progress: Collection, achievements: Collection,
+     *     assignments: Collection, challenges_today: Collection, challenge_rewards: Collection
      * }
      */
     public function studentDetail(Student $student): array
@@ -121,7 +128,16 @@ class TeacherStatsService
             'summary' => $this->studentSummary($student),
             'recent_sessions' => $recentSessions,
             'category_progress' => app(StudentStatsService::class)->progressByCategory($student),
-            'achievements' => $student->achievements()->orderByPivot('unlocked_at', 'desc')->get(),
+            'achievements' => collect(GamificationService::achievements($student->user_id))
+                ->filter(fn (array $badge) => $badge['unlocked'])
+                ->sortByDesc(fn (array $badge) => $badge['unlocked_at'] ?? '')
+                ->values(),
+            'assignments' => $student->submissions()
+                ->with('assignment.lesson')
+                ->latest()
+                ->get(),
+            'challenges_today' => ChallengeService::challengeStatus($student->user_id),
+            'challenge_rewards' => ChallengeService::challengeRewards($student->user_id)->take(5),
         ];
     }
 

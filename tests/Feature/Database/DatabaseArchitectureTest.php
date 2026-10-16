@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Database;
 
-use App\Models\Achievement;
 use App\Models\Assignment;
 use App\Models\AssignmentSubmission;
+use App\Models\Badge;
 use App\Models\Category;
 use App\Models\Challenge;
-use App\Models\ChallengeAttempt;
+use App\Models\ChallengeProgress;
 use App\Models\GestureResult;
 use App\Models\Lesson;
 use App\Models\Material;
@@ -15,6 +15,8 @@ use App\Models\PracticeSession;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
+use App\Services\GamificationService;
+use Database\Seeders\BadgeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -70,30 +72,37 @@ class DatabaseArchitectureTest extends TestCase
     |--------------------------------------------------------------------------
     */
 
-    public function test_student_can_unlock_achievement_once(): void
+    public function test_user_cannot_unlock_badge_twice(): void
     {
-        $student = Student::factory()->create();
-        $achievement = Achievement::factory()->create();
+        $this->seed(BadgeSeeder::class);
+        $badge = Badge::firstWhere('badge_key', 'first_practice');
+        $user = User::factory()->student()->has(Student::factory(), 'student')->create();
 
-        $student->achievements()->attach($achievement, ['unlocked_at' => now()]);
+        $user->badgeUsers()->attach($badge, ['unlocked_at' => now()]);
 
-        $this->assertTrue($student->achievements->contains($achievement));
+        $this->assertTrue($badge->users->contains($user));
 
         $this->expectException(\Illuminate\Database\QueryException::class);
-        $student->achievements()->attach($achievement, ['unlocked_at' => now()]);
+        $user->badgeUsers()->attach($badge, ['unlocked_at' => now()]);
     }
 
-    public function test_student_earns_challenge_xp_only_when_passed(): void
+    public function test_challenge_reward_xp_counts_only_completed_progress(): void
     {
         $student = Student::factory()->create();
-        $challenge = Challenge::factory()->create(['xp_reward' => 20]);
+        $challenge = Challenge::create([
+            'challenge_date' => today(),
+            'title' => 'Praktik Uji',
+            'category' => 'alfabet',
+            'target' => 5,
+            'reward_xp' => 20,
+        ]);
 
-        ChallengeAttempt::create([
+        // Progres belum tamat → XP belum masuk.
+        ChallengeProgress::create([
+            'user_id' => $student->user_id,
             'challenge_id' => $challenge->id,
-            'student_id' => $student->id,
-            'score' => 40,
-            'passed' => false,
-            'xp_earned' => 0,
+            'progress' => 1,
+            'completed' => false,
         ]);
 
         $this->assertSame(0, $student->totalXp());
@@ -111,13 +120,19 @@ class DatabaseArchitectureTest extends TestCase
         PracticeSession::factory()->count(2)->for($student)->create(['xp_earned' => 50]);
         PracticeSession::factory()->for($student)->inProgress()->create(['xp_earned' => 999]);
 
-        $challenge = Challenge::factory()->for(Lesson::factory())->create(['xp_reward' => 20]);
-        ChallengeAttempt::create([
+        $challenge = Challenge::create([
+            'challenge_date' => today(),
+            'title' => 'Praktik Uji',
+            'category' => 'kosakata',
+            'target' => 5,
+            'reward_xp' => 20,
+        ]);
+        ChallengeProgress::create([
+            'user_id' => $student->user_id,
             'challenge_id' => $challenge->id,
-            'student_id' => $student->id,
-            'score' => 90,
-            'passed' => true,
-            'xp_earned' => 20,
+            'progress' => $challenge->target,
+            'completed' => true,
+            'completed_at' => today(),
         ]);
 
         $teacher = Teacher::factory()->create();
@@ -132,7 +147,7 @@ class DatabaseArchitectureTest extends TestCase
 
         // 2 × 50 (practice selesai) + 20 (challenge) + 30 (assignment) = 150
         $this->assertSame(150, $student->totalXp());
-        $this->assertSame(2, $student->level());
+        $this->assertSame('Beginner', GamificationService::levelFromXp($student->totalXp())['name']);
     }
 
     /*
@@ -183,13 +198,18 @@ class DatabaseArchitectureTest extends TestCase
         $session = PracticeSession::factory()->for($student)->create();
         GestureResult::factory()->for($session)->create(['lesson_id' => $session->lesson_id]);
 
-        $challenge = Challenge::factory()->create();
-        ChallengeAttempt::create([
+        $challenge = Challenge::create([
+            'challenge_date' => today(),
+            'title' => 'Praktik Uji',
+            'category' => 'alfabet',
+            'target' => 5,
+            'reward_xp' => 20,
+        ]);
+        ChallengeProgress::create([
+            'user_id' => $user->id,
             'challenge_id' => $challenge->id,
-            'student_id' => $student->id,
-            'score' => 80,
-            'passed' => true,
-            'xp_earned' => 20,
+            'progress' => 1,
+            'completed' => false,
         ]);
 
         $user->delete();
@@ -197,7 +217,7 @@ class DatabaseArchitectureTest extends TestCase
         $this->assertDatabaseMissing('students', ['id' => $student->id]);
         $this->assertDatabaseMissing('practice_sessions', ['id' => $session->id]);
         $this->assertDatabaseMissing('gesture_results', ['practice_session_id' => $session->id]);
-        $this->assertDatabaseMissing('challenge_attempts', ['student_id' => $student->id]);
+        $this->assertDatabaseMissing('challenge_progress', ['user_id' => $user->id]);
     }
 
     public function test_deleting_material_cascades_to_lessons_and_sessions(): void
@@ -227,7 +247,7 @@ class DatabaseArchitectureTest extends TestCase
         $this->assertSame(6, User::count()); // 1 guru + 5 siswa
         $this->assertTrue(Category::where('slug', 'alphabet')->exists());
         $this->assertGreaterThan(0, Lesson::count());
-        $this->assertGreaterThan(0, Achievement::count());
+        $this->assertSame(8, Badge::count()); // katalog badge
         $this->assertGreaterThan(0, Challenge::count());
         $this->assertGreaterThan(0, PracticeSession::count());
     }

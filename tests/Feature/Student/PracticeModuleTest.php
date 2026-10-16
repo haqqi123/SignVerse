@@ -159,9 +159,10 @@ class PracticeModuleTest extends TestCase
 
         // Start
         $response = $this->actingAs($user)->get(route('student.practice.start', $lesson));
-        $response->assertRedirect(route('student.practice.show', ['session' => 1]));
 
+        // Cari id sesi yang baru (auto-increment MySQL tidak di-reset antar test).
         $session = PracticeSession::where('student_id', $user->student->id)->sole();
+        $response->assertRedirect(route('student.practice.show', ['session' => $session->id]));
 
         // Show
         $this->actingAs($user)->get(route('student.practice.show', $session))->assertOk();

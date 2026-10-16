@@ -77,8 +77,7 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     Route::post('/practice/{session}/complete', [PracticeController::class, 'complete'])->name('practice.complete');
     Route::get('/practice/{session}/result', [PracticeController::class, 'result'])->name('practice.result');
 
-    Route::get('/challenge', [ChallengeController::class, 'show'])->name('challenge.show');
-    Route::post('/challenge/attempt', [ChallengeController::class, 'attempt'])->name('challenge.attempt');
+    Route::get('/challenge', [ChallengeController::class, 'show'])->name('challenge');
 
     Route::get('/progress', ProgressController::class)->name('progress');
     Route::get('/achievements', [AchievementController::class, 'index'])->name('achievements.index');

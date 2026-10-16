@@ -5,59 +5,245 @@
 
 @config "../../tailwind.config.js";
 
-/* ── Komponen UI kustom SignVerse ───────────────────────────── */
-@layer components {
-    /* Tautan pada sidebar */
-    .nav-link {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        min-height: 2.9rem;
-        padding: 0 0.85rem;
-        border-radius: 0.8rem;
-        font-size: 0.92rem;
-        font-weight: 600;
-        color: var(--color-ink-muted, #6b6a86);
-        transition: background-color 0.18s, color 0.18s;
-    }
-    .nav-link:hover {
-        background-color: rgb(238 240 255);
-        color: var(--color-primary-dark, #4f46e5);
-    }
-    .nav-link-active {
-        background-color: rgb(238 240 255);
-        color: var(--color-primary-dark, #4f46e5);
-        font-weight: 700;
+/* ── Dasar ──────────────────────────────────────────────────── */
+@layer base {
+    html {
+        scroll-behavior: smooth;
     }
 
-    /* Tombol utama & sekunder */
-    .btn-primary,
-    .btn-secondary {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        min-height: 2.75rem;
-        padding: 0 1.25rem;
-        border-radius: 0.75rem;
-        font-weight: 600;
-        font-size: 0.95rem;
-        cursor: pointer;
-        transition: all 0.15s;
+    body {
+        @apply bg-surface text-ink;
     }
+
+    /* Fokus keyboard yang jelas di semua elemen interaktif (aksesibilitas) */
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-primary;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+}
+
+/* ── Komponen UI SignVerse ──────────────────────────────────── */
+@layer components {
+    /* Kartu umum */
+    .card {
+        @apply rounded-card border border-surface-border bg-white p-5 shadow-card sm:p-6;
+    }
+
+    .card-hover {
+        @apply transition duration-200 hover:-translate-y-0.5 hover:border-primary-100 hover:shadow-lift;
+    }
+
+    /* Kartu statistik */
+    .stat-card {
+        @apply relative overflow-hidden rounded-card border border-surface-border bg-white p-5 shadow-card;
+    }
+
+    .stat-label {
+        @apply flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-ink-muted;
+    }
+
+    .stat-value {
+        @apply mt-2 text-3xl font-extrabold tracking-tight text-ink;
+    }
+
+    .stat-delta {
+        @apply text-xs font-semibold text-secondary;
+    }
+
+    /* Ikon dalam kotak berwarna (stat & menu) */
+    .icon-tile {
+        @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl;
+    }
+
+    /* Tombol — tinggi minimal 44px agar mudah diklik/di-tap */
     .btn-primary {
-        background-color: #6366f1;
-        color: #ffffff;
+        @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5
+            font-semibold text-white shadow-glow transition duration-200 hover:-translate-y-px hover:bg-primary-dark
+            active:translate-y-0 disabled:pointer-events-none disabled:opacity-50;
     }
-    .btn-primary:hover {
-        background-color: #4f46e5;
-        transform: translateY(-1px);
-    }
+
     .btn-secondary {
-        background-color: rgb(241 241 245);
-        color: #1e1b3a;
+        @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-surface-border
+            bg-white px-5 py-2.5 font-semibold text-ink transition duration-200 hover:border-primary-100
+            hover:bg-primary-50 hover:text-primary-dark disabled:pointer-events-none disabled:opacity-50;
     }
-    .btn-secondary:hover {
-        background-color: rgb(228 228 234);
+
+    .btn-ghost {
+        @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-semibold
+            text-primary transition hover:bg-primary-50 hover:text-primary-dark;
+    }
+
+    .btn-danger {
+        @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-2.5
+            font-semibold text-white transition hover:bg-red-700;
+    }
+
+    /* Badge / pill */
+    .badge {
+        @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ring-1 ring-inset;
+    }
+
+    .badge-indigo {
+        @apply bg-primary-50 text-primary-dark ring-primary-100;
+    }
+
+    .badge-teal {
+        @apply bg-teal-50 text-teal-700 ring-teal-100;
+    }
+
+    .badge-amber {
+        @apply bg-amber-50 text-amber-800 ring-amber-200;
+    }
+
+    .badge-gray {
+        @apply bg-gray-50 text-gray-600 ring-gray-200;
+    }
+
+    /* Progress / XP bar */
+    .xp-track {
+        @apply h-2.5 w-full overflow-hidden rounded-full bg-primary-50;
+    }
+
+    .xp-fill {
+        @apply h-full rounded-full bg-gradient-to-r from-primary to-secondary transition-all duration-500;
+    }
+
+    /* Sidebar link */
+    .nav-link {
+        @apply relative flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-ink-muted
+            transition duration-150 hover:bg-surface hover:text-ink;
+    }
+
+    .nav-link-active {
+        @apply bg-primary-50 text-primary-dark hover:bg-primary-50 hover:text-primary-dark;
+    }
+
+    .nav-link-active::before {
+        content: '';
+        @apply absolute top-2 bottom-2 -left-4 w-1 rounded-r-full bg-primary;
+    }
+
+    .nav-section {
+        @apply px-3 pt-5 pb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-ink-soft;
+    }
+
+    /* Judul section */
+    .section-title {
+        @apply text-2xl font-extrabold tracking-tight text-ink sm:text-[1.75rem];
+    }
+
+    .section-sub {
+        @apply mt-1 text-sm text-ink-muted sm:text-base;
+    }
+
+    .section-mini-title {
+        @apply text-base font-extrabold text-ink;
+    }
+
+    .section-mini-sub {
+        @apply mb-2 text-sm text-ink-muted;
+    }
+
+    /* Form */
+    .form-label {
+        @apply mb-1.5 block text-sm font-semibold text-ink;
+    }
+
+    .form-input {
+        @apply block w-full rounded-xl border border-surface-border bg-white px-3.5 py-2.5 text-sm text-ink
+            shadow-sm transition placeholder:text-ink-soft focus:border-primary focus:ring-4 focus:ring-primary/15;
+    }
+
+    .form-help {
+        @apply mt-1.5 text-xs text-ink-muted;
+    }
+
+    /* Alert / flash message */
+    .alert {
+        @apply flex items-start gap-3 rounded-xl border px-4 py-3 text-sm font-semibold;
+    }
+
+    .alert-success {
+        @apply border-teal-200 bg-teal-50 text-teal-800;
+    }
+
+    .alert-error {
+        @apply border-red-200 bg-red-50 text-red-700;
+    }
+
+    .alert-info {
+        @apply border-primary-100 bg-primary-50 text-primary-dark;
+    }
+
+    /* Lainnya */
+    .empty-state {
+        @apply py-8 text-center text-ink-muted;
+    }
+
+    .empty-state-emoji {
+        @apply text-2xl;
+    }
+
+    .divider {
+        @apply my-5 border-t border-surface-border;
+    }
+
+    .caption {
+        @apply text-sm text-ink-muted;
+    }
+
+    .hero {
+        @apply py-12 text-center;
+    }
+
+    .hero h1 {
+        @apply text-4xl font-extrabold tracking-tight text-ink;
+    }
+
+    .hero .grad,
+    .text-gradient {
+        @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+    }
+
+    .hero .sub {
+        @apply mt-1 text-lg text-ink-muted;
+    }
+
+    /* Banner sambutan bergradien di dashboard */
+    .welcome-banner {
+        @apply relative overflow-hidden rounded-card bg-gradient-to-br from-primary via-indigo-500 to-secondary p-6 text-white shadow-lift sm:p-8;
+    }
+
+    .welcome-banner::after {
+        content: '';
+        @apply pointer-events-none absolute -top-16 -right-16 h-56 w-56 rounded-full bg-white/10;
+    }
+}
+
+/* ── Tabel di dalam kartu: header lembut + highlight baris ──── */
+@layer components {
+    .card table thead tr {
+        @apply border-surface-border text-[11px] text-ink-soft;
+    }
+
+    .card table thead th {
+        @apply font-bold;
+    }
+
+    .card table tbody tr {
+        @apply transition-colors last:border-0 hover:bg-surface-muted;
     }
 }

@@ -19,6 +19,9 @@ use Illuminate\Support\Facades\DB;
  *   - lulus  (>= 60) → XP penuh lesson, status completed
  *   - belum lulus → XP 0, sesi tetap completed (bisa diulang kapan saja)
  *   - satu sesi aktif (in_progress) per student; resume, bukan duplikat
+ *
+ * Setelah sesi selesai, gamifikasi dijalankan:
+ * evaluasi badge → bump challenge harian per kategori.
  */
 class PracticeService
 {
@@ -26,7 +29,6 @@ class PracticeService
 
     public function __construct(
         private GestureRecognitionService $recognizer,
-        private GamificationService $gamification,
     ) {}
 
     /**
@@ -79,9 +81,9 @@ class PracticeService
 
     /**
      * Akhiri sesi: hitung skor dari gesture results, tentukan XP, update
-     * streak student. Return sesi yang sudah final + flag lulus.
+     * streak student lalu evaluasi gamifikasi. Return sesi final + lulus.
      *
-     * @return array{session: PracticeSession, passed: bool, score: int, xp_earned: int}
+     * @return array{session: PracticeSession, passed: bool, score: int, xp_earned: int, new_badges: string[]}
      */
     public function complete(PracticeSession $session): array
     {
@@ -92,6 +94,7 @@ class PracticeService
                 'passed' => $session->score >= self::PASS_SCORE,
                 'score' => (int) $session->score,
                 'xp_earned' => (int) $session->xp_earned,
+                'new_badges' => [],
             ];
         }
 
@@ -112,15 +115,26 @@ class PracticeService
 
             $this->updateStreak($session->student);
 
-            // Achievement dicek setelah tiap sesi selesai (xp/streak/practice bisa berubah).
-            $newAchievements = $this->gamification->checkAchievements($session->student);
+            // Gamifikasi:
+            // evaluasi badge lalu tambahkan progres challenge harian.
+            $userId = $session->student->user_id;
+            $badgesBefore = GamificationService::unlockedKeys($userId);
+            GamificationService::evaluateBadges($userId);
+            $newBadges = GamificationService::badgeNames(array_values(array_diff(
+                GamificationService::unlockedKeys($userId),
+                $badgesBefore,
+            )));
+
+            if ($session->lesson->material) {
+                ChallengeService::bumpChallenge($userId, $session->lesson->material->category->slug);
+            }
 
             return [
                 'session' => $session,
                 'passed' => $passed,
                 'score' => $score,
                 'xp_earned' => $xp,
-                'new_achievements' => $newAchievements,
+                'new_badges' => $newBadges,
             ];
         });
     }

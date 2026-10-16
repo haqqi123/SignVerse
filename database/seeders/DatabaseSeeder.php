@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             ContentSeeder::class,
-            AchievementSeeder::class,
+            BadgeSeeder::class,
             DemoPracticeSeeder::class,
         ]);
     }

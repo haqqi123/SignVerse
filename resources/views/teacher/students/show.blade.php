@@ -18,7 +18,7 @@
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div class="stat-card">
                     <div class="stat-label">🏅 Level / XP</div>
-                    <div class="stat-value">Lv {{ $summary['level'] }}</div>
+                    <div class="stat-value">{{ $summary['level'] }}</div>
                     <div class="mt-1 text-xs text-ink-muted">{{ $summary['xp'] }} XP</div>
                 </div>
                 <div class="stat-card">
@@ -122,13 +122,92 @@
                     <h3 class="font-extrabold text-ink">Achievement</h3>
                     <div class="mt-3 flex flex-wrap gap-2">
                         @forelse ($detail['achievements'] as $achievement)
-                            <span class="badge badge-indigo !text-xs" title="{{ $achievement->description }}">
-                                🏆 {{ $achievement->name }}
+                            <span class="badge badge-indigo !text-xs" title="{{ $achievement['description'] }}">
+                                🏆 {{ $achievement['name'] }}
                             </span>
                         @empty
                             <p class="text-sm text-ink-muted">Belum ada achievement.</p>
                         @endforelse
                     </div>
+                </div>
+            </div>
+
+            <div class="mt-6 grid gap-6 lg:grid-cols-2">
+
+                {{-- Tugas (assignment) siswa --}}
+                <div class="card overflow-x-auto">
+                    <h3 class="font-extrabold text-ink">Tugas</h3>
+                    <table class="mt-3 w-full text-left text-sm">
+                        <thead>
+                            <tr class="border-b border-surface-border text-xs uppercase tracking-wider text-ink-muted">
+                                <th class="py-2 pr-4">Tugas</th>
+                                <th class="py-2 pr-4">Status</th>
+                                <th class="py-2">Skor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($detail['assignments'] as $submission)
+                                <tr class="border-b border-surface-border/60">
+                                    <td class="py-2.5 pr-4">
+                                        <div class="font-semibold text-ink">{{ $submission->assignment->title }}</div>
+                                        <div class="text-xs text-ink-muted">{{ $submission->assignment->lesson?->title }}</div>
+                                    </td>
+                                    <td class="py-2.5 pr-4">
+                                        @switch($submission->status)
+                                            @case(\App\Models\AssignmentSubmission::STATUS_COMPLETED)
+                                                <span class="badge badge-teal !text-xs">Selesai</span>
+                                                @break
+                                            @case(\App\Models\AssignmentSubmission::STATUS_IN_PROGRESS)
+                                                <span class="badge badge-amber !text-xs">Dikerjakan</span>
+                                                @break
+                                            @default
+                                                <span class="badge badge-indigo !text-xs">Belum dikerjakan</span>
+                                        @endswitch
+                                    </td>
+                                    <td class="py-2.5">{{ $submission->score ?? '—' }}</td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="3" class="py-4 text-center text-ink-muted">Belum ada tugas untuk siswa ini.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                {{-- Challenge harian siswa --}}
+                <div class="card">
+                    <h3 class="font-extrabold text-ink">Challenge Hari Ini</h3>
+                    <div class="mt-3 space-y-3">
+                        @forelse ($detail['challenges_today'] as $challenge)
+                            @php($challengePercent = $challenge->target > 0 ? min(100, (int) round($challenge->progress / $challenge->target * 100)) : 0)
+                            <div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="font-semibold text-ink">{{ $challenge->title }}</span>
+                                    <span class="text-ink-muted">
+                                        {{ $challenge->completed ? '✅ Selesai' : $challenge->progress.'/'.$challenge->target }}
+                                    </span>
+                                </div>
+                                <div class="mt-1 h-2 w-full rounded-full bg-surface-border">
+                                    <div class="h-2 rounded-full bg-primary" style="width: {{ $challengePercent }}%"></div>
+                                </div>
+                            </div>
+                        @empty
+                            <p class="text-sm text-ink-muted">Belum ada challenge hari ini.</p>
+                        @endforelse
+                    </div>
+
+                    <h4 class="mt-5 text-sm font-bold text-ink">Riwayat Reward Challenge</h4>
+                    <ul class="mt-2 space-y-1 text-sm">
+                        @forelse ($detail['challenge_rewards'] as $reward)
+                            <li class="flex items-center justify-between">
+                                <span class="text-ink">{{ $reward->title }}</span>
+                                <span class="text-xs text-ink-muted">
+                                    +{{ $reward->reward_xp }} XP · {{ \Illuminate\Support\Carbon::parse($reward->completed_at)->format('d M') }}
+                                </span>
+                            </li>
+                        @empty
+                            <li class="text-ink-muted">Belum ada challenge yang diselesaikan.</li>
+                        @endforelse
+                    </ul>
                 </div>
             </div>
 

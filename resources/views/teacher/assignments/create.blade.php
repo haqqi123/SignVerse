@@ -15,12 +15,12 @@
                 @csrf
 
                 <div>
-                    <label for="lesson_id" class="mb-1 block text-sm font-bold text-ink">Lesson Target</label>
+                    <label for="lesson_id" class="form-label">Lesson Target</label>
                     <select id="lesson_id" name="lesson_id" required
-                            class="w-full rounded-lg border border-surface-border bg-white px-3 py-2.5 text-sm text-ink">
+                            class="form-input">
                         <option value="">— Pilih lesson —</option>
                         @foreach ($lessons as $lesson)
-                            <option value="{{ $lesson->id }}" @old('lesson_id') == $lesson->id ? 'selected' : '' }}>
+                            <option value="{{ $lesson->id }}" @selected(old('lesson_id') == $lesson->id)>
                                 [{{ $lesson->material->category->name }}] {{ $lesson->title }}
                             </option>
                         @endforeach
@@ -29,51 +29,51 @@
                 </div>
 
                 <div>
-                    <label for="title" class="mb-1 block text-sm font-bold text-ink">Judul Tugas</label>
+                    <label for="title" class="form-label">Judul Tugas</label>
                     <input id="title" name="title" type="text" required maxlength="200"
                            value="{{ old('title') }}"
                            placeholder="cth: Latihan Sapaan Dasar"
-                           class="w-full rounded-lg border border-surface-border px-3 py-2.5 text-sm text-ink" />
+                           class="form-input" />
                     @error('title') <p class="mt-1 text-xs font-semibold text-red-600">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
-                    <label for="description" class="mb-1 block text-sm font-bold text-ink">Instruksi (opsional)</label>
+                    <label for="description" class="form-label">Instruksi (opsional)</label>
                     <textarea id="description" name="description" rows="3"
                               placeholder="Petunjuk pengerjaan untuk siswa…"
-                              class="w-full rounded-lg border border-surface-border px-3 py-2.5 text-sm text-ink">{{ old('description') }}</textarea>
+                              class="form-input">{{ old('description') }}</textarea>
                 </div>
 
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div>
-                        <label for="min_score" class="mb-1 block text-sm font-bold text-ink">Syarat Skor Lulus</label>
+                        <label for="min_score" class="form-label">Syarat Skor Lulus</label>
                         <input id="min_score" name="min_score" type="number" min="1" max="100" required
                                value="{{ old('min_score', 60) }}"
-                               class="w-full rounded-lg border border-surface-border px-3 py-2.5 text-sm text-ink" />
+                               class="form-input" />
                         <p class="mt-1 text-xs text-ink-muted">Skor latihan minimal agar tugas dianggap selesai.</p>
                         @error('min_score') <p class="mt-1 text-xs font-semibold text-red-600">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label for="xp_reward" class="mb-1 block text-sm font-bold text-ink">XP Reward</label>
+                        <label for="xp_reward" class="form-label">XP Reward</label>
                         <input id="xp_reward" name="xp_reward" type="number" min="1" max="500" required
                                value="{{ old('xp_reward', 30) }}"
-                               class="w-full rounded-lg border border-surface-border px-3 py-2.5 text-sm text-ink" />
+                               class="form-input" />
                         @error('xp_reward') <p class="mt-1 text-xs font-semibold text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div>
-                        <label for="available_at" class="mb-1 block text-sm font-bold text-ink">Tersedia Mulai (opsional)</label>
+                        <label for="available_at" class="form-label">Tersedia Mulai (opsional)</label>
                         <input id="available_at" name="available_at" type="datetime-local"
                                value="{{ old('available_at') }}"
-                               class="w-full rounded-lg border border-surface-border px-3 py-2.5 text-sm text-ink" />
+                               class="form-input" />
                     </div>
                     <div>
-                        <label for="due_at" class="mb-1 block text-sm font-bold text-ink">Deadline (opsional)</label>
+                        <label for="due_at" class="form-label">Deadline (opsional)</label>
                         <input id="due_at" name="due_at" type="datetime-local"
                                value="{{ old('due_at') }}"
-                               class="w-full rounded-lg border border-surface-border px-3 py-2.5 text-sm text-ink" />
+                               class="form-input" />
                         @error('due_at') <p class="mt-1 text-xs font-semibold text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>

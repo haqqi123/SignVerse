@@ -26,6 +26,9 @@ class AssignmentController extends Controller
     {
         $student = $this->stats->forUser($request->user());
 
+        // Safety net untuk siswa yang terdaftar sebelum tugas aktif dibagikan.
+        $this->assignments->distributeActiveTo($student);
+
         return view('student.assignments.index', [
             'pending' => $this->assignments->pendingFor($student),
             'completed' => $this->assignments->completedFor($student),
@@ -72,14 +75,6 @@ class AssignmentController extends Controller
         }
 
         $outcome = $this->assignments->submitFromPractice($student, $assignment, $session);
-
-        if ($outcome['completed'] && $outcome['new_achievements']->isNotEmpty()) {
-            $names = $outcome['new_achievements']->pluck('name')->implode(', ');
-
-            return redirect()
-                ->route('student.assignments.show', $assignment)
-                ->with('status', '🎉 Tugas selesai! Skor '.$outcome['score'].' (+'.$outcome['xp_earned'].' XP). Achievement baru: '.$names.'!');
-        }
 
         if ($outcome['completed']) {
             return redirect()

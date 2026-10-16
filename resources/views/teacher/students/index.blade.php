@@ -29,7 +29,7 @@
                                         {{ $row['name'] }}
                                     </a>
                                 </td>
-                                <td class="py-2.5 pr-4"><span class="badge badge-indigo !text-xs">Lv {{ $row['level'] }}</span></td>
+                                <td class="py-2.5 pr-4"><span class="badge badge-indigo !text-xs">{{ $row['level'] }}</span></td>
                                 <td class="py-2.5 pr-4 text-ink-muted">{{ $row['xp'] }}</td>
                                 <td class="py-2.5 pr-4">🔥 {{ $row['streak'] }}</td>
                                 <td class="py-2.5 pr-4">{{ $row['sessions'] }} sesi</td>

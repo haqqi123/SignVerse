@@ -12,21 +12,21 @@ use Illuminate\Support\Collection;
 /**
  * Statistik dashboard & progress student (phase 3).
  *
- * XP dan level dihitung agregat dari practice_sessions + challenge/assignment
- * rewards (tanpa kolom xp di students — desain sama dengan project lama).
+ * XP & level dihitung agregat:
+ * level = tabel level bernama dari GamificationService::levelFromXp(),
+ * streak = streak aktif dari tanggal latihan (GamificationService::streakInfo).
  */
 class StudentStatsService
 {
     /**
      * Ringkasan lengkap untuk dashboard student.
      *
-     * @return array{xp: int, level: int, xp_in_level: int, xp_for_next_level: int, streak: int, longest_streak: int, sessions: int, avg_score: float, lessons_mastered: int, lessons_total: int}
+     * @return array{xp: int, level: array{name: string, color: string, xp: int, threshold: int, next_xp: int|null, pct: float}, streak: int, longest_streak: int, sessions: int, avg_score: float, lessons_mastered: int, lessons_total: int}
      */
     public function dashboardSummary(Student $student): array
     {
         $xp = $student->totalXp();
-        $level = $student->level();
-        $xpInLevel = $xp - (($level - 1) * 100);
+        $level = GamificationService::levelFromXp($xp);
 
         $sessions = PracticeSession::query()
             ->where('student_id', $student->id)
@@ -37,9 +37,7 @@ class StudentStatsService
         return [
             'xp' => $xp,
             'level' => $level,
-            'xp_in_level' => $xpInLevel,
-            'xp_for_next_level' => 100 - $xpInLevel,
-            'streak' => $student->current_streak,
+            'streak' => GamificationService::streakInfo($student->user_id)['streak'],
             'longest_streak' => $student->longest_streak,
             'sessions' => (clone $sessions)->count(),
             'avg_score' => round($avgScore, 1),

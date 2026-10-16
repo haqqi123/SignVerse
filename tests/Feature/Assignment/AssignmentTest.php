@@ -1,8 +1,6 @@
 <?php
 
 namespace Tests\Feature\Assignment;
-
-use App\Models\Achievement;
 use App\Models\Assignment;
 use App\Models\AssignmentSubmission;
 use App\Models\Category;
@@ -140,15 +138,10 @@ class AssignmentTest extends TestCase
         $this->assertSame(30, $student->totalXp());
     }
 
-    public function test_assignment_completion_triggers_assignment_achievement(): void
+    public function test_assignment_completion_does_not_break_gamified_flow(): void
     {
         $service = app(AssignmentService::class);
         $student = Student::factory()->create();
-
-        Achievement::factory()->create([
-            'type' => Achievement::TYPE_ASSIGNMENT,
-            'threshold' => 1,
-        ]);
 
         $lesson = $this->lesson();
         $assignment = $service->createAndDistribute([
@@ -163,7 +156,9 @@ class AssignmentTest extends TestCase
         $outcome = $service->submitFromPractice($student, $assignment, $session);
 
         $this->assertTrue($outcome['completed']);
-        $this->assertTrue($outcome['new_achievements']->contains('type', Achievement::TYPE_ASSIGNMENT));
+        $this->assertSame(30, $outcome['xp_earned']);
+        // Badge dievaluasi pada sesi latihan, bukan di submission.
+        $this->assertArrayNotHasKey('new_achievements', $outcome);
     }
 
     /*

@@ -11,7 +11,7 @@
             <div class="grid gap-4 sm:grid-cols-3">
                 <div class="stat-card">
                     <div class="stat-label">Level & XP</div>
-                    <div class="stat-value">{{ $summary['level'] }}</div>
+                    <div class="stat-value" style="color: {{ $summary['level']['color'] }}">{{ $summary['level']['name'] }}</div>
                     <div class="text-xs text-ink-muted">{{ number_format($summary['xp']) }} XP total</div>
                 </div>
                 <div class="stat-card">

@@ -19,10 +19,6 @@ use Illuminate\Support\Facades\DB;
  */
 class AssignmentService
 {
-    public function __construct(
-        private GamificationService $gamification,
-    ) {}
-
     /**
      * Buat tugas baru + bagikan ke semua student (atau subset).
      *
@@ -49,11 +45,37 @@ class AssignmentService
     }
 
     /**
+     * Bagikan semua tugas yang masih aktif (belum lewat deadline / tanpa
+     * deadline) ke satu student — untuk student yang mendaftar setelah tugas
+     * dibuat guru. Idempoten: tugas yang sudah dibagikan tidak diduplikasi.
+     *
+     * @return int Jumlah tugas baru yang dibagikan.
+     */
+    public function distributeActiveTo(Student $student): int
+    {
+        $activeAssignments = Assignment::query()
+            ->where(fn ($query) => $query
+                ->whereNull('due_at')
+                ->orWhere('due_at', '>=', now()))
+            ->whereDoesntHave('submissions', fn ($query) => $query->where('student_id', $student->id))
+            ->get();
+
+        foreach ($activeAssignments as $assignment) {
+            AssignmentSubmission::create([
+                'assignment_id' => $assignment->id,
+                'student_id' => $student->id,
+            ]);
+        }
+
+        return $activeAssignments->count();
+    }
+
+    /**
      * Hubungkan sesi latihan dengan tugas student yang masih "assigned":
      * skor sesi >= min_score → completed + XP; di bawah itu → tetap assigned
      * (bisa mencoba lagi).
      *
-     * @return array{completed: bool, score: int, xp_earned: int, new_achievements: \Illuminate\Support\Collection}
+     * @return array{completed: bool, score: int, xp_earned: int}
      */
     public function submitFromPractice(Student $student, Assignment $assignment, PracticeSession $session): array
     {
@@ -70,7 +92,6 @@ class AssignmentService
                 'completed' => true,
                 'score' => (int) $submission->score,
                 'xp_earned' => (int) $submission->xp_earned,
-                'new_achievements' => collect(),
             ];
         }
 
@@ -86,15 +107,10 @@ class AssignmentService
             'completed_at' => $passed ? now() : null,
         ])->save();
 
-        $newAchievements = $passed
-            ? $this->gamification->checkAchievements($student)
-            : collect();
-
         return [
             'completed' => $passed,
             'score' => $score,
             'xp_earned' => $passed ? $assignment->xp_reward : 0,
-            'new_achievements' => $newAchievements,
         ];
     }
 

@@ -3,14 +3,18 @@
 namespace Tests\Feature\Teacher;
 
 use App\Models\Assignment;
+use App\Models\AssignmentSubmission;
+use App\Models\Category;
+use App\Models\ChallengeProgress;
 use App\Models\GestureResult;
 use App\Models\Lesson;
 use App\Models\Material;
-use App\Models\Category;
 use App\Models\PracticeSession;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
+use App\Services\ChallengeService;
+use App\Services\GamificationService;
 use App\Services\TeacherStatsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -111,7 +115,10 @@ class TeacherModuleTest extends TestCase
         $this->assertSame(2, $row['sessions']);
         $this->assertSame(70.0, $row['avg_score']);
         $this->assertSame($student->totalXp(), $row['xp']);
-        $this->assertSame($student->level(), $row['level']);
+        $this->assertSame(
+            GamificationService::levelFromXp($student->totalXp())['name'],
+            $row['level'],
+        );
     }
 
     public function test_student_detail_aggregates_progress_and_sessions(): void
@@ -255,6 +262,52 @@ class TeacherModuleTest extends TestCase
         $response->assertOk();
         $response->assertSee($student->user->name);
         $response->assertSee('halo');
+    }
+
+    public function test_student_last_activity_comes_from_latest_completed_session(): void
+    {
+        $student = $this->studentUser();
+        $student->update(['last_activity_date' => null]);
+
+        PracticeSession::factory()->completed()->for($student)->create(['completed_at' => now()->subDays(3)]);
+        PracticeSession::factory()->completed()->for($student)->create(['completed_at' => now()->subDay()]);
+
+        $summary = app(TeacherStatsService::class)->studentSummary($student);
+
+        $this->assertTrue($summary['last_activity']->isSameDay(now()->subDay()));
+    }
+
+    public function test_teacher_student_detail_shows_assignments_and_challenges_of_student(): void
+    {
+        $teacher = $this->teacherUser();
+        $student = $this->studentUser();
+
+        $assignment = Assignment::factory()->for($teacher->teacher)->for($this->lesson())->create([
+            'title' => 'Tugas Sapaan',
+        ]);
+        AssignmentSubmission::create([
+            'assignment_id' => $assignment->id,
+            'student_id' => $student->id,
+            'status' => AssignmentSubmission::STATUS_COMPLETED,
+            'score' => 88,
+        ]);
+
+        $challenge = ChallengeService::ensureTodayChallenges()->first();
+        ChallengeProgress::create([
+            'user_id' => $student->user_id,
+            'challenge_id' => $challenge->id,
+            'progress' => $challenge->target,
+            'completed' => true,
+            'completed_at' => now(),
+        ]);
+
+        $response = $this->actingAs($teacher)->get(route('teacher.students.show', $student));
+
+        $response->assertOk();
+        $response->assertSee('Tugas Sapaan');
+        $response->assertSee('Selesai');
+        $response->assertSee($challenge->title);
+        $response->assertSee('+'.$challenge->reward_xp.' XP');
     }
 
     /*

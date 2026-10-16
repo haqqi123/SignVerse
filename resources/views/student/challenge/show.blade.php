@@ -1,74 +1,94 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="section-title">Challenge Harian</h2>
-        <p class="section-sub">{{ today()->translatedFormat('l, d F Y') }} — satu lesson spesial, XP bonus!</p>
+        <p class="section-sub">Selesaikan tantangan dan raih tambahan XP setiap hari 🎯 · {{ today()->translatedFormat('l, d F Y') }}</p>
     </x-slot>
 
-    <div class="py-8">
-        <div class="mx-auto max-w-3xl sm:px-6 lg:px-8">
-
-            <div class="card text-center">
-                <span class="text-5xl">🎯</span>
-                <h3 class="mt-3 text-xl font-extrabold text-ink">{{ $challenge->title }}</h3>
-
-                @if ($challenge->description)
-                    <p class="mt-2 text-sm text-ink-muted">{{ $challenge->description }}</p>
-                @endif
-
-                <div class="mt-4 flex flex-wrap items-center justify-center gap-2">
-                    <span class="badge badge-indigo">+{{ $challenge->xp_reward }} XP bonus</span>
-                    <span class="badge {{ $attempt?->passed ? 'badge-teal' : 'badge-amber' }}">
-                        Syarat lulus: skor ≥ {{ \App\Services\GamificationService::CHALLENGE_PASS_SCORE }}
-                    </span>
-                </div>
-
-                <div class="mx-auto mt-6 max-w-sm rounded-lg border border-surface-border bg-gray-50 p-4">
-                    <div class="text-xs font-bold uppercase tracking-wider text-ink-muted">Lesson hari ini</div>
-                    <div class="mt-1 text-lg font-extrabold text-ink">{{ $challenge->lesson->title }}</div>
-                    <div class="text-xs text-ink-muted">
-                        {{ $challenge->lesson->material->category->name }} · {{ strtoupper($challenge->lesson->material->language) }}
-                    </div>
-                </div>
-
-                @if ($attempt)
-                    {{-- Sudah ikut hari ini --}}
-                    <div class="mt-6 rounded-lg border border-surface-border p-4">
-                        <div class="text-sm font-bold text-ink">Hasilmu hari ini</div>
-                        <div class="mt-2 flex items-center justify-center gap-6">
-                            <div>
-                                <div class="stat-label">Skor</div>
-                                <div class="text-2xl font-extrabold {{ $attempt->passed ? 'text-teal-600' : 'text-amber-600' }}">{{ $attempt->score }}</div>
+    {{-- Daftar Tantangan Hari Ini --}}
+    @if (count($challenges) > 0)
+        <div class="space-y-4 py-8">
+            @foreach ($challenges as $ch)
+                @php
+                    $target = max(1, (int) $ch->target);
+                    $cur = min($target, (int) $ch->progress);
+                    $pct = (int) ($cur / $target * 100);
+                @endphp
+                <div class="card">
+                    <div class="flex flex-wrap items-start justify-between gap-2">
+                        <div>
+                            <div class="flex items-center gap-2 text-lg font-extrabold text-ink">
+                                {{ $ch->title }}
+                                @if ($ch->completed)
+                                    <span class="text-teal-600">✅ Selesai!</span>
+                                @endif
                             </div>
-                            <div>
-                                <div class="stat-label">XP</div>
-                                <div class="text-2xl font-extrabold text-primary">+{{ $attempt->xp_earned }}</div>
-                            </div>
-                            <div>
-                                <div class="stat-label">Status</div>
-                                <div class="text-2xl">{{ $attempt->passed ? '🎉' : '💪' }}</div>
+                            <div class="mt-0.5 text-sm text-ink-muted">{{ $ch->description }}</div>
+                            <div class="mt-2 text-xs font-semibold text-ink-muted">
+                                Progres: {{ $cur }}/{{ $target }} selesai · Target Kategori: {{ ucfirst($ch->category) }}
                             </div>
                         </div>
-                        <p class="mt-3 text-xs text-ink-muted">Challenge berikutnya tersedia besok!</p>
+                        <x-badge variant="amber">+{{ $ch->reward_xp }} XP</x-badge>
                     </div>
-                @else
-                    {{-- Belum ikut — tombol attempt (evaluasi mock, kamera nyata di phase 9) --}}
-                    <form method="POST" action="{{ route('student.challenge.attempt') }}" class="mt-6">
-                        @csrf
-                        <button type="submit" class="btn-primary w-full sm:w-auto">
-                            ✋ Ikuti Challenge ({{ \App\Services\GamificationService::CHALLENGE_PASS_SCORE }}+ = lulus)
-                        </button>
-                        <p class="mt-2 text-xs text-ink-muted">
-                            Mode development: 3 attempt gesture dievaluasi mock AI. Kamera nyata di Phase 9.
-                        </p>
-                    </form>
-                @endif
-            </div>
 
-            <div class="mt-6 text-center">
-                <a href="{{ route('student.practice.index') }}" class="text-sm font-semibold text-primary hover:underline">
-                    Ingin latihan biasa dulu? Buka AI Practice →
-                </a>
-            </div>
+                    <div class="mt-3">
+                        <x-xp-bar :pct="$pct" :height="8" />
+                    </div>
+
+                    @if ($ch->completed)
+                        <div class="mt-3 text-sm font-bold text-teal-600">
+                            Bonus +{{ $ch->reward_xp }} XP telah masuk ke akunmu! 🎉
+                        </div>
+                    @else
+                        <div class="mt-4">
+                            <a href="{{ route('student.practice.index') }}" class="btn-primary !px-4 !py-2 text-sm">
+                                Kerjakan Tantangan Ini 🔥
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    @else
+        <div class="card py-10 text-center">
+            <span class="text-5xl">🎯</span>
+            <p class="mt-3 text-sm text-ink-muted">Tidak ada challenge aktif untuk hari ini. Kembali lagi besok!</p>
+        </div>
+    @endif
+
+    {{-- Streak Belajar --}}
+    <div class="card mt-4 py-8 text-center">
+        <div class="text-sm font-black text-ink-muted">Streak Kamu Saat Ini</div>
+        <div class="mt-1 text-5xl font-extrabold text-ink">{{ $streak }} 🔥 hari</div>
+        <div class="mt-2 text-sm text-ink-muted">
+            @if ($isToday)
+                Kamu sudah berlatih hari ini! Terus jaga konsistensimu.
+            @else
+                Latihan hari ini untuk mempertahankan dan menambah streak belajarmu!
+            @endif
+        </div>
+    </div>
+
+    {{-- Riwayat Reward Challenge --}}
+    <div class="card mt-6">
+        <h3 class="font-extrabold text-ink">Reward yang Sudah Diraih</h3>
+        <p class="mt-0.5 text-sm text-ink-muted">Daftar challenge harian yang berhasil kamu selesaikan</p>
+
+        <div class="mt-3">
+            @forelse ($rewards as $r)
+                <div class="flex items-center justify-between border-b border-surface-border py-2.5">
+                    <div class="flex items-center gap-3">
+                        <x-badge variant="indigo">+{{ $r->reward_xp }} XP</x-badge>
+                        <span class="text-sm font-bold text-ink">{{ $r->title }}</span>
+                    </div>
+                    <div class="text-xs text-ink-muted">
+                        {{ $r->completed_at ? \Carbon\Carbon::parse($r->completed_at)->format('d M Y H:i') : '-' }}
+                    </div>
+                </div>
+            @empty
+                <p class="py-6 text-center text-sm text-ink-muted">
+                    Selesaikan challenge harian untuk mulai mengumpulkan riwayat reward XP!
+                </p>
+            @endforelse
         </div>
     </div>
 </x-app-layout>

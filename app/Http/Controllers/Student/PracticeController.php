@@ -116,9 +116,8 @@ class PracticeController extends Controller
             ? 'Hebat! Kamu lulus dengan skor '.$outcome['score'].' (+'.$outcome['xp_earned'].' XP).'
             : 'Belum lulus (skor '.$outcome['score'].'). Coba lagi ya!';
 
-        if ($outcome['new_achievements']->isNotEmpty()) {
-            $names = $outcome['new_achievements']->pluck('name')->implode(', ');
-            $message .= ' 🏆 Achievement baru: '.$names.'!';
+        if ($outcome['new_badges'] !== []) {
+            $message .= ' 🏆 Badge baru: '.implode(', ', $outcome['new_badges']).'!';
         }
 
         return redirect()

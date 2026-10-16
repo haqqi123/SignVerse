@@ -6,13 +6,14 @@ use App\Models\Assignment;
 use App\Models\AssignmentSubmission;
 use App\Models\Category;
 use App\Models\Challenge;
-use App\Models\ChallengeAttempt;
+use App\Models\ChallengeProgress;
 use App\Models\Lesson;
 use App\Models\Material;
 use App\Models\PracticeSession;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\User;
+use App\Services\GamificationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -154,13 +155,22 @@ class StudentModuleTest extends TestCase
 
         PracticeSession::factory()->for($student)->create(['xp_earned' => 40]);
 
-        $challenge = Challenge::factory()->create(['xp_reward' => 20]);
-        ChallengeAttempt::create([
+        // Reward challenge masuk XP hanya via challenge_progress completed.
+        $challenge = Challenge::create([
+            'challenge_date' => today(),
+            'title' => 'Praktik Uji',
+            'description' => 'Latihan uji XP.',
+            'category' => 'alfabet',
+            'target' => 1,
+            'reward_xp' => 20,
+        ]);
+
+        ChallengeProgress::create([
+            'user_id' => $student->user_id,
             'challenge_id' => $challenge->id,
-            'student_id' => $student->id,
-            'score' => 90,
-            'passed' => true,
-            'xp_earned' => 20,
+            'progress' => 1,
+            'completed' => true,
+            'completed_at' => today(),
         ]);
 
         $teacher = Teacher::factory()->create();
@@ -174,6 +184,6 @@ class StudentModuleTest extends TestCase
         ]);
 
         $this->assertSame(90, $student->totalXp());
-        $this->assertSame(1, $student->level()); // < 100 XP
+        $this->assertSame('Beginner', GamificationService::levelFromXp($student->totalXp())['name']);
     }
 }

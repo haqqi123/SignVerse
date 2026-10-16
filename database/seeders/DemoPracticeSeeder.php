@@ -3,18 +3,17 @@
 namespace Database\Seeders;
 
 use App\Models\Challenge;
-use App\Models\ChallengeAttempt;
 use App\Models\GestureResult;
 use App\Models\Lesson;
 use App\Models\PracticeSession;
-use App\Models\Student;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
 /**
  * Data demo practice + challenge harian untuk akun demo (dashboard guru
- * di phase 7 butuh data monitoring). Pola mengikuti project lama:
- * siswa rajin punya skor tinggi & streak, siswa lain bervariasi.
+ * di phase 7 butuh data monitoring). Mengikuti data-model gamifikasi:
+ * challenge harian per kategori (tanggal + kategori unik) dan progres user
+ * di challenge_progress.
  */
 class DemoPracticeSeeder extends Seeder
 {
@@ -25,19 +24,21 @@ class DemoPracticeSeeder extends Seeder
             return;
         }
 
-        // --- Challenge harian: 7 hari terakhir, lesson dirotasi ---
+        // --- Challenge harian: 7 hari terakhir, 2 kategori per hari ---
         $challengeByDate = [];
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i)->toDateString();
-            $lesson = $lessons[$i % $lessons->count()];
 
-            $challengeByDate[$date] = Challenge::create([
-                'lesson_id' => $lesson->id,
-                'challenge_date' => $date,
-                'title' => 'Challenge Harian: '.$lesson->title,
-                'description' => 'Latihan isyarat "'.$lesson->title.'" hari ini dan raih XP bonus!',
-                'xp_reward' => 20,
-            ]);
+            $challengeByDate[$date] = [
+                Challenge::updateOrCreate(
+                    ['challenge_date' => $date, 'category' => 'alfabet'],
+                    ['title' => 'Praktik 5 huruf', 'description' => 'Lakukan 5 latihan huruf alfabet hari ini.', 'target' => 5, 'reward_xp' => 20],
+                ),
+                Challenge::updateOrCreate(
+                    ['challenge_date' => $date, 'category' => 'kosakata'],
+                    ['title' => 'Praktik 3 kosakata', 'description' => 'Lakukan 3 latihan kata kosakata hari ini.', 'target' => 3, 'reward_xp' => 20],
+                ),
+            ];
         }
 
         // --- Sesi latihan demo ---
@@ -55,17 +56,17 @@ class DemoPracticeSeeder extends Seeder
             if (! $user?->student) {
                 continue;
             }
-            $student = $user->student;
 
             for ($s = 0; $s < $sessionCount; $s++) {
                 $lesson = $lessons[$s % $lessons->count()];
                 $startedAt = now()->subDays($sessionCount - $s)->subHours(rand(1, 6));
                 $score = (int) max(20, min(100, $avgScore + rand(-15, 15)));
                 $attempts = rand(2, 6);
-                $xp = (int) round($lesson->xp_reward * $score / 100);
+                // Base XP: 10 + bonus 10 jika akurasi >= 90.
+                $xp = $score >= 90 ? 20 : 10;
 
                 $session = PracticeSession::create([
-                    'student_id' => $student->id,
+                    'student_id' => $user->student->id,
                     'lesson_id' => $lesson->id,
                     'language' => $lesson->material->language,
                     'status' => PracticeSession::STATUS_COMPLETED,
@@ -90,34 +91,29 @@ class DemoPracticeSeeder extends Seeder
                         'correct' => $correct,
                     ]);
                 }
-
-                // Update streak student (latihan terakhir hari ini / kemarin)
-                $student->forceFill([
-                    'last_activity_date' => $s === $sessionCount - 1 ? today() : $student->last_activity_date,
-                ])->save();
             }
 
-            // Challenge attempts: siswa mengikuti sebagian challenge
-            foreach ($challengeByDate as $date => $challenge) {
-                if (rand(1, 100) > 60) {
-                    continue;
+            // Challenge progress: siswa mengikuti sebagian challenge harian
+            foreach ($challengeByDate as $challengePair) {
+                foreach ($challengePair as $challenge) {
+                    if (rand(1, 100) > 60) {
+                        continue;
+                    }
+
+                    $completed = rand(1, 100) <= 40;
+                    $progress = $completed ? $challenge->target : rand(0, $challenge->target - 1);
+
+                    \DB::table('challenge_progress')->updateOrInsert(
+                        ['user_id' => $user->id, 'challenge_id' => $challenge->id],
+                        [
+                            'progress' => $progress,
+                            'completed' => $completed,
+                            'completed_at' => $completed
+                                ? \Carbon\Carbon::parse($challenge->challenge_date)->setTime(9, 0)
+                                : null,
+                        ],
+                    );
                 }
-                $score = (int) max(20, min(100, $avgScore + rand(-10, 10)));
-                $passed = $score >= 60;
-
-                ChallengeAttempt::create([
-                    'challenge_id' => $challenge->id,
-                    'student_id' => $student->id,
-                    'score' => $score,
-                    'passed' => $passed,
-                    'xp_earned' => $passed ? $challenge->xp_reward : 0,
-                    'attempted_at' => $date.' 09:00:00',
-                ]);
-            }
-
-            $student->refresh();
-            if ($student->challengeAttempts()->where('passed', true)->exists()) {
-                $student->forceFill(['current_streak' => rand(2, 9)])->save();
             }
         }
     }
