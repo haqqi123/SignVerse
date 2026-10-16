@@ -1,7 +1,7 @@
 """
 SignTeach AI Service — FastAPI wrapper untuk model YOLO existing (best.pt).
 
-Paritas dengan signlib/ai.py (Python/Streamlit):
+Ketentuan:
 - Model deteksi alfabet A-Z SIBI fingerspelling TIDAK diubah.
 - Parameter deteksi sama: conf (default 0.30), iou 0.45, imgsz 320.
 - Return: [{letter, confidence, xyxy}] per deteksi.

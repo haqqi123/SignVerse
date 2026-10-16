@@ -1,7 +1,7 @@
 # SignTeach AI Service
 
 Microservice FastAPI untuk deteksi isyarat alfabet (YOLO `best.pt` existing).
-Dipakai oleh aplikasi Laravel (halaman AI Practice & Inclusive Communication).
+Belum tersambung ke frontend Vue (deteksi di `PracticeView.vue` masih simulasi).
 
 ## Menjalankan
 
@@ -26,6 +26,5 @@ Contoh response `/detect`:
 {"detections": [{"letter": "S", "confidence": 0.87, "xyxy": [10, 20, 100, 120]}]}
 ```
 
-Catatan: model, parameter deteksi (conf/iou/imgsz=320), dan format hasil
-identik dengan `signlib/ai.py` pada aplikasi Python/Streamlit existing —
-tidak ada perubahan teknologi AI.
+Catatan: parameter deteksi conf/iou/imgsz=320. Versi lama (Streamlit dan
+`laravel-app`) tersimpan di branch `archive/legacy`.

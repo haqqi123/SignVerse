@@ -74,3 +74,6 @@ Thumbs.db
 *.bak
 *.tmp
 
+
+# Next.js build output
+.next/
