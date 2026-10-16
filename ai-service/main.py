@@ -1,7 +1,7 @@
 """
 SignTeach AI Service — FastAPI wrapper untuk model YOLO existing (best.pt).
 
-Paritas dengan signlib/ai.py (Python/Streamlit):
+Parameter deteksi (sama dengan versi Streamlit sebelumnya):
 - Model deteksi alfabet A-Z SIBI fingerspelling TIDAK diubah.
 - Parameter deteksi sama: conf (default 0.30), iou 0.45, imgsz 320.
 - Return: [{letter, confidence, xyxy}] per deteksi.
@@ -24,7 +24,7 @@ from fastapi import FastAPI, File, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(os.path.dirname(BASE_DIR), "best.pt")
+MODEL_PATH = os.path.join(BASE_DIR, "best.pt")
 
 app = FastAPI(title="SignTeach AI Service", version="1.0.0")
 

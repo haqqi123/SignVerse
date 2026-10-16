@@ -27,5 +27,5 @@ Contoh response `/detect`:
 ```
 
 Catatan: model, parameter deteksi (conf/iou/imgsz=320), dan format hasil
-identik dengan `signlib/ai.py` pada aplikasi Python/Streamlit existing —
-tidak ada perubahan teknologi AI.
+identik dengan versi Python/Streamlit sebelumnya — tidak ada perubahan
+teknologi AI. File model `best.pt` berada di folder `ai-service/`.
